@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useState } from 'react';
 import { FaBell, FaBars, FaTimes } from 'react-icons/fa';
 
