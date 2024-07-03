@@ -8,6 +8,10 @@ module.exports = {
       colors: {
         customGreen: '#3c7471',
         customHover: '#f28f43',
+        white:'#fff',
+        orange: '#f28f43',
+        bleugris: '#32445a',
+        vertbleu: '#3c7471',
       },
     },
   },
