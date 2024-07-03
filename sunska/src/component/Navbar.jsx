@@ -13,12 +13,12 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-customGreen fixed top-0 w-full z-50 p-4">
+        <nav className="bg-customGreen top-0 w-full z-50 p-4">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="hidden md:flex space-x-4">
                     <a href="/stock" className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">Stock</a>
-                    <a href="/commande" className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">Commande</a>
-                    <a href="/statistique" className="text-white hover:bg-customHover-700 px-3 py-2 rounded-md text-sm font-medium">Statistiques</a>
+                    <a href="/commandes" className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">Commandes</a>
+                    <a href="/statistiques" className="text-white hover:bg-customHover-700 px-3 py-2 rounded-md text-sm font-medium">Statistiques</a>
                     <a href="/bar" className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">Bar</a>
                     <a href="/magasin" className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">Magasin</a>
                 </div>
