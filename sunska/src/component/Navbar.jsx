@@ -28,6 +28,9 @@ const Navbar = () => {
         magasin: {
             name: 'Magasin',
             path: '/magasin'},
+        produit: {
+            name: 'Produit',
+            path: '/produit'},
     }
 
     return (
@@ -39,6 +42,7 @@ const Navbar = () => {
                     <a href={routes.stats.path} className="text-white hover:bg-customHover-700 px-3 py-2 rounded-md text-sm font-medium">{routes.stats.name}</a>
                     <a href={routes.bar.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.bar.name}</a>
                     <a href={routes.magasin.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.magasin.name}</a>
+                    <a href={routes.produit.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.produit.name}</a>
                 </div>
                 <div className="text-white cursor-pointer md:hidden" onClick={toggleMenu}>
                     {isOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
@@ -54,6 +58,7 @@ const Navbar = () => {
                     <a href={routes.stats.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.stats.name}</a>
                     <a href={routes.bar.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.bar.name}</a>
                     <a href={routes.magasin.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.magasin.name}</a>
+                    <a href={routes.produit.path} className="text-white hover:bg-customHover px-3 py-2 rounded-md text-sm font-medium">{routes.produit.name}</a>
                 </div>
             )}
         </nav>

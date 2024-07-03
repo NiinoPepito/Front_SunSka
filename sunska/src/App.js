@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
 import ConnexionPage from "./page/ConnexionPage";
 import StockBarPage from "./page/StockBarPage";
+import ProductsPage from "./page/Admin/ProductsPage";
 import MagasinPage from "./page/magasin/MagasinPage";
 import BarDetailPage from "./page/magasin/BarDetailPage";
 import BarListPage from "./page/magasin/BarListPage";
@@ -26,6 +27,7 @@ function App() {
             <Route path="/statistiques" element={<StatistiquesPage />} />
             <Route path="/commandes" element={<CommandesPage />} />
             <Route path="/commande/:id" element={<CommandePage />} />
+            <Route path="/produit" element={<ProductsPage />} />
         </Routes>
       </BrowserRouter>
   );
