@@ -1,9 +1,12 @@
-import Connexion from "../component/Connexion";
+import Connexion from "../component/connexion/Connexion";
+import BackgroundImage from "../component/backgroundImage/BackgroundImage";
 
 const ConnexionPage = () => {
     return (
         <>
-            <Connexion />
+        <BackgroundImage>
+                <Connexion />
+        </BackgroundImage>
         </>
     );
 };
