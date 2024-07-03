@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 
 const StockBar = () => {
     const initialProducts = [
-        { id: 1, name: 'Produit A', stock: 10},
-        { id: 2, name: 'Produit B', stock: 20},
-        { id: 3, name: 'Produit C', stock: 20},
-        { id: 4, name: 'Produit D', stock: 20},
-        { id: 5, name: 'Produit E', stock: 20},
-        { id: 6, name: 'Produit F', stock: 20},
-        { id: 7, name: 'Produit G', stock: 20},
+        { id: 1, name: 'Produit A', stock: 10 },
+        { id: 2, name: 'Produit B', stock: 20 },
+        { id: 3, name: 'Produit C', stock: 20 },
+        { id: 4, name: 'Produit D', stock: 20 },
+        { id: 5, name: 'Produit E', stock: 20 },
+        { id: 6, name: 'Produit F', stock: 20 },
+        { id: 7, name: 'Produit G', stock: 20 },
         // Ajoutez plus de produits ici
     ];
 
@@ -29,6 +29,7 @@ const StockBar = () => {
 
     return (
         <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4 text-center">Stock du BAR</h1>
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
                     <thead>
