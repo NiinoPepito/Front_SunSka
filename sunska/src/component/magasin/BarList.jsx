@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 const BarList = () => {
     const bars = [
-        { id: 1, name: 'Bar A', location: 'Location A' },
-        { id: 2, name: 'Bar B', location: 'Location B' },
-        { id: 3, name: 'Bar C', location: 'Location C' },
-        { id: 4, name: 'Bar D', location: 'Location D' },
+        { id: 1, name: 'Bar A', location: 'Location A', chef: 'Chef A' },
+        { id: 2, name: 'Bar B', location: 'Location B', chef: 'Chef B' },
+        { id: 3, name: 'Bar C', location: 'Location C', chef: 'Chef C' },
+        { id: 4, name: 'Bar D', location: 'Location D', chef: 'Chef D' },
         // Ajoutez plus de bars ici
     ];
 
@@ -31,6 +31,7 @@ const BarList = () => {
                         >
                             <td className="py-2 px-4 border-b">{bar.name}</td>
                             <td className="py-2 px-4 border-b">{bar.location}</td>
+                            <td className="py-2 px-4 border-b">{bar.chef}</td>
                         </tr>
                     ))}
                     </tbody>

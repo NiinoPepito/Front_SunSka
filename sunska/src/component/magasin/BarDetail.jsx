@@ -25,9 +25,22 @@ const BarDetail = () => {
         ));
     };
 
+    const handleGenerateOrder = () => {
+        // Logique pour générer une commande
+        alert('Commande générée');
+    };
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4 text-center">Stock du Bar {id}</h1>
+            <div className="flex justify-end mb-4">
+                <button
+                    className="bg-orange text-white px-4 py-2 rounded"
+                    onClick={handleGenerateOrder}
+                >
+                    Générer une commande
+                </button>
+            </div>
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
                     <thead>
@@ -35,7 +48,7 @@ const BarDetail = () => {
                         <th className="py-2 px-4 border-b">Produits</th>
                         <th className="py-2 px-4 border-b">Stock Bar</th>
                         <th className="py-2 px-4 border-b">Stock Magasin</th>
-                        <th className="py-2 px-4 border-b">Réassort</th>
+                        <th className="py-2 px-4 border-b">Quantité</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,17 +65,19 @@ const BarDetail = () => {
                                     value={product.reassort}
                                     onChange={(e) => handleReassortChange(product.id, parseInt(e.target.value) || 0)}
                                 />
-                                <button
-                                    className="bg-blue-500 text-white px-3 py-1 rounded"
-                                    onClick={() => handleReassort(product.id)}
-                                >
-                                    Réassort
-                                </button>
                             </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
+            </div>
+            <div className="flex justify-end mt-4">
+                <button
+                    className="bg-orange text-white px-4 py-2 rounded"
+                    onClick={handleGenerateOrder}
+                >
+                    Générer une commande
+                </button>
             </div>
         </div>
     );
