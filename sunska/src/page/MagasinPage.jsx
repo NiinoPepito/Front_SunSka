@@ -1,9 +1,11 @@
-import Magasin from "../component/Magasin";
+import StockMagasin from "../component/magasin/StockMagasin";
+import Navbar from "../component/Navbar";
 
 const MagasinPage = () => {
     return (
         <>
-            <Magasin />
+            <Navbar />
+            <StockMagasin />
         </>
     );
 };
