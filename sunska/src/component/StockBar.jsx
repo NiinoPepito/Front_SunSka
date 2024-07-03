@@ -27,12 +27,6 @@ const StockBar = () => {
         ));
     };
 
-    const handleAlertChange = (id, value) => {
-        setProducts(products.map(product =>
-            product.id === id ? { ...product, alert: value } : product
-        ));
-    };
-
     return (
         <div className="p-4">
             <div className="overflow-x-auto">
@@ -42,7 +36,6 @@ const StockBar = () => {
                         <th className="py-2 px-4 border-b">Produits</th>
                         <th className="py-2 px-4 border-b">Stock</th>
                         <th className="py-2 px-4 border-b">Action</th>
-                        <th className="py-2 px-4 border-b">Alerte</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,14 +56,6 @@ const StockBar = () => {
                                 >
                                     -
                                 </button>
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                                <input
-                                    type="number"
-                                    className="border p-1 w-full"
-                                    value={product.alert || ''}
-                                    onChange={(e) => handleAlertChange(product.id, e.target.value)}
-                                />
                             </td>
                         </tr>
                     ))}
