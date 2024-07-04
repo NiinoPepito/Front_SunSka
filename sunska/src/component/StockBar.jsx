@@ -1,31 +1,43 @@
 import React, { useState, useEffect } from 'react';
 
 const StockBar = () => {
-    const initialProducts = [
-        { id: 1, name: 'Produit A', stock: 10, quantity: 0 },
-        { id: 2, name: 'Produit B', stock: 20, quantity: 0 },
-        { id: 3, name: 'Produit C', stock: 20, quantity: 0 },
-        { id: 4, name: 'Produit D', stock: 20, quantity: 0 },
-        { id: 5, name: 'Produit E', stock: 20, quantity: 0 },
-        { id: 6, name: 'Produit F', stock: 20, quantity: 0 },
-        { id: 7, name: 'Produit G', stock: 20, quantity: 0 },
-        // Ajoutez plus de produits ici
-    ];
-
-    const [products, setProducts] = useState(initialProducts);
+    const [products, setProducts] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [buildingName, setBuildingName] = useState('');
 
     useEffect(() => {
-        // Récupérer le nom du bâtiment depuis sessionStorage
-        const storedBuilding = localStorage.getItem('userBuilding');
-        console.log(storedBuilding);
-        if (storedBuilding) {
-            let storedBuildingName = storedBuilding["name"];
-            console.log(storedBuildingName)
-            setBuildingName(JSON.parse(storedBuildingName));
+        // Récupérer l'objet du bâtiment depuis localStorage
+        const storedUser = localStorage.getItem('userBuilding');
+        if (storedUser) {
+            try {
+                const userObject = JSON.parse(storedUser);
+                if (userObject.name) {
+                    setBuildingName(userObject.name);
+                }
+                if (userObject.id) {
+                    fetchStockData(userObject.id);
+                }
+            } catch (error) {
+                console.error('Erreur lors du parsing de l\'objet userBuilding', error);
+            }
         }
     }, []);
+
+    const fetchStockData = async (buildingId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/stock/2024/${buildingId}`);
+            const data = await response.json();
+            const formattedProducts = data.map((item, index) => ({
+                id: index + 1,
+                name: `${item.name} (Capacité: ${item.capacity} ${item.unit})`,
+                stock: item.currentStock,
+                quantity: 0
+            }));
+            setProducts(formattedProducts);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des données de stock', error);
+        }
+    };
 
     const handleQuantityChange = (id, quantity) => {
         setProducts(products.map(product =>
