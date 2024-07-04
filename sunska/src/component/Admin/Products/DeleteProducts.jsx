@@ -32,7 +32,7 @@ const DeleteProducts = () => {
             <div className="flex items-center justify-between">
                 <button
                     type="submit"
-                    className="bg-customGreen  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    className="bg-vertbleu  text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
                     Supprimer le produit
                 </button>
