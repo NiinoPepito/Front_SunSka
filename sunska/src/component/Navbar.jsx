@@ -31,7 +31,7 @@ const Navbar = () => {
         produit: {
             name: 'Produit',
             path: '/produit'},
-        produit: {
+        compte: {
             name: 'Compte',
             path: '/compte'},
     }
