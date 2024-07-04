@@ -45,14 +45,23 @@ const Commande = ({id}) => {
         }
       ];
 
-      const [order] = useState(orderList[id]);
+      const [orderRequest] = useState(orderList[id]);
+
+      const [order, setOrder] = useState(orderRequest);
+
+      const handleQuantityChange = (id, quantity) => {
+        setOrder(order.products.map(product =>
+            product.id === id ? {...order, products: { ...product, quantity: quantity }} : order
+        ));
+        alert(`${order.products.find((product) => product.id == id).name}`)
+    };
 
     return (
         <>
-            <div className='flex flex-col items-center'>
-                <h1>Commande n°<span className='font-bold'>{ order.id }</span></h1>
-                <h2>Bar <NavLink to={`/stockbar/${order.bar.id}`} className='font-bold text-orange'>{ order.bar.name }</NavLink></h2>
-                {order.status === "pending" && <button className="bg-orange text-white px-3 py-1 rounded mr-2">Valider la commande</button>}
+            <div className='flex flex-col items-center mb-10'>
+                <h1 className='text-3xl mb-3'>Commande n°<span className='font-bold'>{ order.id }</span></h1>
+                <h2 className='text-3xl mb-3'>Bar <NavLink to={`/stockbar/${order.bar.id}`} className='font-bold text-orange underline'>{ order.bar.name }</NavLink></h2>
+                {order.status === "pending" && <button className="bg-orange text-white px-3 py-1 rounded">Valider la commande</button>}
             </div>
             <table className="min-w-full bg-white">
                     <thead>
@@ -67,19 +76,16 @@ const Commande = ({id}) => {
                         <tr key={product.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
                             <td className="py-2 px-4 border-b">{product.name}</td>
                             <td className="py-2 px-4 border-b">{product.quantity}</td>
-                            <td className="py-4 px-4 border-b flex justify-center">
-                                <button
-                                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                                    onClick={() => console.log("+")}
-                                >
-                                    +
-                                </button>
-                                <button
-                                    className="bg-red-500 text-white px-3.5 py-1 rounded"
-                                    onClick={() => console.log("-")}
-                                >
-                                    -
-                                </button>
+                            <td className="py-2 px-4 border-b text-center">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    className="border p-1 w-16 text-center rounded border-bleugris"
+                                    value={product.quantity}
+                                    onFocus={(e) => e.target.value === '0' && (e.target.value = '')}
+                                    onBlur={(e) => e.target.value === '' && (e.target.value = '0')}
+                                    onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 0)}
+                                />
                             </td>
                         </tr>
                     ))}

@@ -55,7 +55,7 @@ const Commandes = () => {
         },
         {
             id: 2,
-            status: 'test',
+            status: 'delivered',
             products : [
                 { id: 1, name: 'Produit A', quantity: 10 },
                 { id: 4, name: 'Produit D', quantity: 20 },
@@ -69,13 +69,14 @@ const Commandes = () => {
 
     return (
         <>
-        <h1>Commandes</h1>
-        <div className="flex flex-row w-fit ring-2 ring-bleugris rounded-3xl">
+        <h1 className='flex justify-center text-3xl mb-3'>Commandes</h1>
+
+        <div className="flex flex-row w-fit ring-2 ring-bleugris rounded-3xl mb-3">
             <div className="flex items-center">
                 <input id="commandes-en-cours" name="commandes-type-radio" type="radio" onChange={handleRadioChecked} checked={pending} value="pending" className="hidden peer text-blue-600 bg-gray-100 border-gray-300"/>
                 <label htmlFor="commandes-en-cours" className="p-2 text-sm font-medium rounded-l-3xl bg-gray-200 cursor-pointer peer-checked:bg-orange peer-checked:cursor-default">Commandes en cours</label>
             </div>
-            <div className="flex items-center">
+            <div className="hidden flex items-center">
                 <input id="commandes-test" name="commandes-type-radio" type="radio" onChange={handleRadioChecked} checked={test} value="test" className="hidden peer text-blue-600 bg-gray-100 border-gray-300"/>
                 <label htmlFor="commandes-test" className="p-2 text-sm font-medium bg-gray-200 cursor-pointer peer-checked:bg-orange peer-checked:cursor-default">Commandes test</label>
             </div>
@@ -107,8 +108,6 @@ const Commandes = () => {
                     ))}
                     </tbody>
                 </table>
-
-
         </>
     );
 };
