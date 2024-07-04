@@ -46,10 +46,10 @@ const Connexion = () => {
                     localStorage.setItem('userRole', JSON.stringify(data.role));
                     localStorage.setItem('userBuilding', JSON.stringify(data.building));
                     // TODO : redirect vers les routes suivant le role
-                    if(data.role === "USER" || data.building.type === "Bar"){
+                    if(data.role === "USER" || data.building.type === "BAR"){
                         navigate('/stockbar');
                     }
-                    if(data.role === "Admin" || data.building.type === "Magasin"){
+                    if(data.role === "Admin" || data.building.type === "SHOP"){
                         navigate('/magasin');
                     }
                 }
