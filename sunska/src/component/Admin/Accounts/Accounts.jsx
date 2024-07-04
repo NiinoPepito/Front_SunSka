@@ -15,19 +15,19 @@ const Accounts = () => {
             <div className="mb-4 flex flex-wrap justify-center space-x-2">
                 <button
                     onClick={handleCreate}
-                    className="bg-customGreen hover:bg-customHover text-white font-bold py-2 px-4 rounded mx-2 my-1"
+                    className="bg-vertbleu hover:bg-orange text-white font-bold py-2 px-4 rounded mx-2 my-1"
                 >
                     Créer un compte
                 </button>
                 <button
                     onClick={handleDelete}
-                    className="bg-customGreen hover:bg-customHover text-white font-bold py-2 px-4 rounded mx-2 my-1"
+                    className="bg-vertbleu hover:bg-orange text-white font-bold py-2 px-4 rounded mx-2 my-1"
                 >
                     Supprimer un compte
                 </button>
                 <button
                     onClick={handleUpdate}
-                    className="bg-customGreen hover:bg-customHover text-white font-bold py-2 px-4 rounded mx-2 my-1"
+                    className="bg-vertbleu hover:bg-orange text-white font-bold py-2 px-4 rounded mx-2 my-1"
                 >
                     Modifier un compte
                 </button>
