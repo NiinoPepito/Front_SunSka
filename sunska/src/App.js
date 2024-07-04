@@ -2,14 +2,18 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
 import ConnexionPage from "./page/ConnexionPage";
 import StockBarPage from "./page/StockBarPage";
-import ProductsPage from "./page/Admin/ProductsPage";
+import ProductsPage from "./page/Admin/Products/ProductsPage";
 import MagasinPage from "./page/magasin/MagasinPage";
 import BarDetailPage from "./page/magasin/BarDetailPage";
 import BarListPage from "./page/magasin/BarListPage";
 import StatistiquesPage from "./page/StatistiquesPage";
 import CommandesPage from "./page/CommandesPage";
 import CommandePage from "./page/CommandePage";
-import AccountsPage from "./page/Admin/AccountsPage";
+import AccountsPage from "./page/Admin/Accounts/AccountsPage";
+import CreateProductsPage from "./page/Admin/Products/CreateProductsPage";
+import CreateAccountsPage from "./page/Admin/Accounts/CreateAccountsPage";
+import UpdatePasswordPage from "./page/Admin/Accounts/UpdatePasswordPage";
+import BuildingsPage from "./page/Admin/Bar/BuildingsPage";
 
 function App() {
     return (
@@ -26,7 +30,12 @@ function App() {
             <Route path="/commandes" element={<CommandesPage />} />
             <Route path="/commande/:id" element={<CommandePage />} />
             <Route path="/produit" element={<ProductsPage />} />
+            <Route path="/createProduit" element={<CreateProductsPage />} />
             <Route path="/compte" element={<AccountsPage />} />
+            <Route path="/createCompte" element={<CreateAccountsPage />} />
+            <Route path="/:id/password" element={<UpdatePasswordPage />} />
+            <Route path="/buildings" element={<BuildingsPage />} />
+
         </Routes>
       </BrowserRouter>
   );

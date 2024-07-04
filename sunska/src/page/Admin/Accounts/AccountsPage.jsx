@@ -1,5 +1,5 @@
-import Navbar from "../../component/Navbar";
-import Accounts from "../../component/Admin/Accounts/Accounts";
+import Navbar from "../../../component/Navbar";
+import Accounts from "../../../component/Admin/Accounts/Accounts";
 
 const AccountsPage = () => {
     return (

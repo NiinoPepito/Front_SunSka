@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CreateProducts = () => {
     const [formData, setFormData] = useState({
@@ -8,6 +8,8 @@ const CreateProducts = () => {
         unit: '',
         unitCaisse: '',
     });
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,7 +21,23 @@ const CreateProducts = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        // Assuming you have a function to save the product
+        saveAccount(formData).then(() => {
+            navigate('/produit'); // Navigate back to products page
+        });
+    };
+
+    const handleBack = () => {
+        navigate('/produit');
+    };
+
+    const saveAccount = async (productData) => {
+        // Implement your save logic here, for example, an API call
+        // This is a placeholder implementation
+        return new Promise((resolve) => {
+            console.log('Produits sauvegardés', productData);
+            resolve();
+        });
     };
 
     return (
@@ -84,7 +102,14 @@ const CreateProducts = () => {
                     type="submit"
                     className="bg-vertbleu text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
-                    Envoyer
+                    Valider
+                </button>
+                <button
+                    type="button"
+                    className="bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
+                    onClick={handleBack}
+                >
+                    Retour
                 </button>
             </div>
         </form>

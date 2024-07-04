@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
-const Accounts = () => {
+const Buildings = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const initialUsers = [
-        { id: 1, name: 'Utilisateur A', identifier: 'userA', role: 'Admin' },
-        { id: 2, name: 'Utilisateur B', identifier: 'userB', role: 'User' },
-        { id: 3, name: 'Utilisateur C', identifier: 'userC', role: 'User' },
+        { id: 1, name: 'Magasin A', theme: 'Magasin' },
+        { id: 2, name: 'Bar B', theme: 'Bar' },
+        { id: 3, name: 'Bar C', theme: 'Bar' },
     ];
 
     const [users, setUsers] = useState(initialUsers);
     const [editingUserId, setEditingUserId] = useState(null);
     const [editingUser, setEditingUser] = useState({
         name: '',
-        identifier: '',
-        role: ''
+        theme: ''
     });
 
     const handleDelete = (id) => {
@@ -28,8 +27,7 @@ const Accounts = () => {
         setEditingUserId(user.id);
         setEditingUser({
             name: user.name,
-            identifier: user.identifier,
-            role: user.role
+            theme: user.theme
         });
     };
 
@@ -49,24 +47,19 @@ const Accounts = () => {
         setEditingUserId(null);
         setEditingUser({
             name: '',
-            identifier: '',
-            role: ''
+            theme: ''
         });
-    };
-
-    const handleChangePassword = (userId) => {
-        navigate(`/${userId}/password`);
     };
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4 text-center">Comptes</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center">Bâtiment</h1>
             <div className="flex justify-end mb-4">
                 <button
                     className="bg-orange text-white px-4 py-2 rounded h-10"
                     onClick={handleCreateUserClick}
                 >
-                    Créer un compte
+                    Créer un bâtiment
                 </button>
             </div>
             <div className="overflow-x-auto">
@@ -74,8 +67,7 @@ const Accounts = () => {
                     <thead>
                     <tr>
                         <th className="py-2 px-4 border-b text-center">Nom</th>
-                        <th className="py-2 px-4 border-b text-center">Identifiant</th>
-                        <th className="py-2 px-4 border-b text-center">Role</th>
+                        <th className="py-2 px-4 border-b text-center">Thème</th>
                         <th className="py-2 px-4 border-b text-center">Action</th>
                     </tr>
                     </thead>
@@ -97,30 +89,17 @@ const Accounts = () => {
                             </td>
                             <td className="py-2 px-4 border-b text-center">
                                 {editingUserId === user.id ? (
-                                    <input
-                                        type="text"
-                                        name="identifier"
-                                        value={editingUser.identifier}
-                                        onChange={handleChange}
-                                        className="border p-2 h-10 w-full"
-                                    />
-                                ) : (
-                                    user.identifier
-                                )}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">
-                                {editingUserId === user.id ? (
                                     <select
-                                        name="role"
-                                        value={editingUser.role}
+                                        name="theme"
+                                        value={editingUser.theme}
                                         onChange={handleChange}
                                         className="border p-2 h-10 w-full"
                                     >
-                                        <option value="User">User</option>
-                                        <option value="Admin">Admin</option>
+                                        <option value="Magasin">Magasin</option>
+                                        <option value="Bar">Bar</option>
                                     </select>
                                 ) : (
-                                    user.role
+                                    user.theme
                                 )}
                             </td>
                             <td className="py-2 px-4 border-b text-right">
@@ -137,12 +116,14 @@ const Accounts = () => {
                                     >
                                         <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
                                     </button>
-                                    <button
-                                        className="text-white h-10 flex items-center justify-center"
-                                        onClick={() => handleChangePassword(user.id)}
-                                    >
-                                        <FontAwesomeIcon icon={faKey} className="text-green-600" />
-                                    </button>
+                                    {editingUserId === user.id && (
+                                        <button
+                                            className="text-white h-10 flex items-center justify-center"
+                                            onClick={() => handleSave(user.id)}
+                                        >
+                                            Save
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>
@@ -154,4 +135,4 @@ const Accounts = () => {
     );
 };
 
-export default Accounts;
+export default Buildings;
