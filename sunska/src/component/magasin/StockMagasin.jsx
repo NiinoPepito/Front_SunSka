@@ -56,7 +56,7 @@ const Magasin = () => {
                 <table className="min-w-full bg-white">
                     <thead>
                     <tr>
-                        <th className="py-2 px-4 border-b">Produit</th>
+                        <th className="py-2 px-4 border-b text-left">Produit</th>
                         <th className="py-2 px-4 border-b text-center w-20">Stock</th>
                         <th className="py-2 px-4 border-b text-center w-32">Réassort</th>
                     </tr>
@@ -70,7 +70,7 @@ const Magasin = () => {
                                 <input
                                     type="number"
                                     min="0"
-                                    className="border p-1 w-16 text-center"
+                                    className="border p-1 w-16 text-center border-bleugris rounded"
                                     value={product.reassort}
                                     onFocus={(e) => e.target.value === '0' && (e.target.value = '')}
                                     onBlur={(e) => e.target.value === '' && (e.target.value = '0')}
