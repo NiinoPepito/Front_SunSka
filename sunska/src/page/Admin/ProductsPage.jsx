@@ -1,5 +1,5 @@
 import Navbar from "../../component/Navbar";
-import Products from "../../component/Admin/Products";
+import Products from "../../component/Admin/Products/Products";
 
 const ProductsPage = () => {
     return (

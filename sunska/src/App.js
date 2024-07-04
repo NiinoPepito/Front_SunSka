@@ -12,6 +12,7 @@ import BarDetail from "./component/magasin/BarDetail";
 import StatistiquesPage from "./page/StatistiquesPage";
 import CommandesPage from "./page/CommandesPage";
 import CommandePage from "./page/CommandePage";
+import AccountsPage from "./page/Admin/AccountsPage";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/commandes" element={<CommandesPage />} />
             <Route path="/commande/:id" element={<CommandePage />} />
             <Route path="/produit" element={<ProductsPage />} />
+            <Route path="/compte" element={<AccountsPage />} />
         </Routes>
       </BrowserRouter>
   );
