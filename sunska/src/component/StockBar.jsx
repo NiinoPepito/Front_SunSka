@@ -1,5 +1,4 @@
-// StockBar.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const StockBar = () => {
     const initialProducts = [
@@ -15,6 +14,18 @@ const StockBar = () => {
 
     const [products, setProducts] = useState(initialProducts);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [buildingName, setBuildingName] = useState('');
+
+    useEffect(() => {
+        // Récupérer le nom du bâtiment depuis sessionStorage
+        const storedBuilding = localStorage.getItem('userBuilding');
+        console.log(storedBuilding);
+        if (storedBuilding) {
+            let storedBuildingName = storedBuilding["name"];
+            console.log(storedBuildingName)
+            setBuildingName(JSON.parse(storedBuildingName));
+        }
+    }, []);
 
     const handleQuantityChange = (id, quantity) => {
         setProducts(products.map(product =>
@@ -45,7 +56,7 @@ const StockBar = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4 text-center">Stock du BAR</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center">{`Stock du ${buildingName}`}</h1>
             <div className="flex justify-end mb-4">
                 <button
                     className="bg-orange font-bold text-white px-4 py-2 rounded"
