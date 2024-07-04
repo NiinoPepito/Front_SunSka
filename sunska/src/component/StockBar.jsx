@@ -29,9 +29,11 @@ const StockBar = () => {
             const data = await response.json();
             const formattedProducts = data.map((item, index) => ({
                 id: index + 1,
-                name: `${item.name} (Capacité: ${item.capacity} ${item.unit})`,
+                name: `${item.name} - ${item.capacity} ${item.unit}`,
                 stock: item.currentStock,
-                quantity: 0
+                quantity: 0,
+                stockId: `${item.stockId}`,
+                buildingId: `${buildingId}`
             }));
             setProducts(formattedProducts);
         } catch (error) {
@@ -49,16 +51,43 @@ const StockBar = () => {
         setShowConfirmation(true);
     };
 
-    const handleConfirmSale = () => {
-        // Mise à jour du stock après la vente
-        setProducts(products.map(product =>
-            product.quantity > 0
-                ? { ...product, stock: product.stock - product.quantity, quantity: 0 }
-                : product
-        ));
-        setShowConfirmation(false);
-        alert('Vente validée');
+    const handleConfirmSale = async () => {
+        try {
+            // Création du tableau stockQtts à partir de productsToSell
+            const stockQtts = productsToSell.map(product => [parseInt(product.stockId), product.quantity]);
+
+            const payload = {
+                stockQtts: stockQtts,
+                buildingId: parseInt(productsToSell[0].buildingId) // Supposons que buildingId est le même pour tous les produits vendus
+            };
+
+            const response = await fetch('http://localhost:8080/orders/SALE', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                // Mise à jour du stock après la vente dans l'interface
+                setProducts(products.map(product =>
+                    product.quantity > 0
+                        ? { ...product, stock: product.stock - product.quantity, quantity: 0 }
+                        : product
+                ));
+                setShowConfirmation(false);
+                alert('Vente validée');
+            } else {
+                console.error('Erreur lors de la validation de la vente:', response.statusText);
+                alert('Erreur lors de la validation de la vente');
+            }
+        } catch (error) {
+            console.error('Erreur lors de la validation de la vente:', error);
+            alert('Erreur lors de la validation de la vente');
+        }
     };
+
 
     const handleCancelSale = () => {
         setShowConfirmation(false);
@@ -123,7 +152,7 @@ const StockBar = () => {
                         {productsToSell.length > 0 ? (
                             <ul className="mb-4">
                                 {productsToSell.map(product => (
-                                    <li key={product.id}>{product.name}: {product.quantity}</li>
+                                    <li key={product.id}>{product.name}: {product.quantity} / {product.stockId} / {product.buildingId}</li>
                                 ))}
                             </ul>
                         ) : (
