@@ -26,7 +26,7 @@ const BarList = () => {
                     {bars.map((bar, index) => (
                         <tr
                             key={bar.id}
-                            className={`cursor-pointer ${index % 2 === 0 ? "bg-gray-100" : ""}`}
+                            className={`cursor-pointer ${index % 2 === 0 ? "bg-tabvertbleu" : ""}`}
                             onClick={() => handleRowClick(bar.id)}
                         >
                             <td className="py-2 px-4 border-b">{bar.name}</td>
