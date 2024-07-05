@@ -6,10 +6,12 @@ const StockBar = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [buildingId, setBuildingId] = useState(null);
     const [buildingName, setBuildingName] = useState('');
+    const [userRole, setUserRole] = useState('');
+    const [userBuildingType, setUserBuildingType] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Récupérer l'objet du bâtiment depuis localStorage
+        // Récupérer l'objet du bâtiment et les informations utilisateur depuis localStorage
         const storedUser = localStorage.getItem('userBuilding');
         if (storedUser) {
             try {
@@ -18,10 +20,18 @@ const StockBar = () => {
                     setBuildingName(userObject.name);
                 }
                 if (userObject.id) {
+                    setBuildingId(userObject.id);
                     fetchStockData(userObject.id);
                 }
+                if (userObject.type) {
+                    setUserBuildingType(userObject.type);
+                }
+                const userRole = JSON.parse(localStorage.getItem('userRole'));
+                if (userRole) {
+                    setUserRole(userRole);
+                }
             } catch (error) {
-                console.error('Erreur lors du parsing de l\'objet userBuilding', error);
+                console.error('Erreur lors du parsing des informations utilisateur', error);
             }
         }
     }, []);
@@ -101,16 +111,21 @@ const StockBar = () => {
         navigate(`/addstockbuilding?buildingId=${buildingId}`);
     };
 
+    // Condition pour déterminer si l'utilisateur est ADMIN BAR
+    const isAdminBar = userRole === 'ADMIN';
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4 text-center">{`Stock du ${buildingName}`}</h1>
             <div className="flex justify-between mb-4">
-                <button
-                    className="bg-vertbleu font-bold text-white px-4 py-2 rounded"
-                    onClick={handleAddProduct}
-                >
-                    Ajouter un produit
-                </button>
+                {isAdminBar && (
+                    <button
+                        className="bg-vertbleu font-bold text-white px-4 py-2 rounded"
+                        onClick={handleAddProduct}
+                    >
+                        Ajouter un produit
+                    </button>
+                )}
                 <button
                     className="bg-orange font-bold text-white px-4 py-2 rounded"
                     onClick={handleValidateSale}

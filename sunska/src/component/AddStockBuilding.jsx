@@ -50,7 +50,7 @@ const AddStockBuilding = () => {
             if (response.ok) {
                 alert('Produit ajouté avec succès');
                 // Rediriger vers la page de stock après l'ajout
-                navigate('/magasin');
+                navigate(-1);
             } else {
                 console.error('Erreur lors de l\'ajout du produit:', response.statusText);
                 alert('Erreur lors de l\'ajout du produit');
