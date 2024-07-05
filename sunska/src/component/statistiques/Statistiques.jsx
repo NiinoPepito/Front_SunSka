@@ -55,11 +55,12 @@ const Statistiques = () => {
 
     return (
         <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4 text-center">Statistiques</h1>
             <div className="mb-4">
                 <Select
                     options={[
-                        { value: 'product', label: 'Nb de vente par produits' },
-                        { value: 'productBar', label: 'Nb de vente par produits et par bar' }
+                        {value: 'product', label: 'Nb de vente par produits'},
+                        {value: 'productBar', label: 'Nb de vente par produits et par bar'}
                     ]}
                     value={{
                         value: statType,

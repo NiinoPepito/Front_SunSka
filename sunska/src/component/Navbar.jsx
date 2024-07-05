@@ -36,7 +36,7 @@ const Navbar = () => {
                                 onClick={toggleMenu}
                                 exact
                             >
-                                Statistiques
+                                Statistique
                             </NavLink>
                             <NavLink
                                 to="/produit"
@@ -48,6 +48,15 @@ const Navbar = () => {
                                 Produit
                             </NavLink>
                             <NavLink
+                                to="/categories"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Catégorie
+                            </NavLink>
+                            <NavLink
                                 to="/compte"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
                                 activeClassName="bg-orange"
@@ -57,13 +66,13 @@ const Navbar = () => {
                                 Compte
                             </NavLink>
                             <NavLink
-                                to="/buildings"
+                                to="/building"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
                                 activeClassName="bg-orange"
                                 onClick={toggleMenu}
                                 exact
                             >
-                                Bâtiments
+                                Bâtiment
                             </NavLink>
                         </>
                     )}
@@ -95,7 +104,7 @@ const Navbar = () => {
                                 onClick={toggleMenu}
                                 exact
                             >
-                                Commandes
+                                Commande
                             </NavLink>
                         </>
                     )}
@@ -137,7 +146,7 @@ const Navbar = () => {
                                 onClick={toggleMenu}
                                 exact
                             >
-                                Statistiques
+                                Statistique
                             </NavLink>
                         </>
                     )}
@@ -157,51 +166,13 @@ const Navbar = () => {
                 <div className="text-white cursor-pointer md:hidden" onClick={toggleMenu}>
                     {isOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
                 </div>
-                {isAdminShop && (
-                    <div className="text-white cursor-pointer" onClick={handleBellClick}>
-                        <FaBell className="w-6 h-6" />
-                    </div>
-                )}
-                {isAdminBar && (
-                    <div className="text-white cursor-pointer" onClick={handleBellClick}>
-                        <FaBell className="w-6 h-6" />
-                    </div>
-                )}
             </div>
             {isOpen && (
                 <div className="md:hidden flex flex-col space-y-2 mt-4">
-                    {/* Liens communs à tous pour mobile */}
-                    <NavLink
-                        to="/stockbar"
-                        className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
-                        activeClassName="bg-orange"
-                        onClick={toggleMenu}
-                        exact
-                    >
-                        Stock
-                    </NavLink>
 
                     {/* Condition pour les liens spécifiques à l'Admin pour mobile */}
                     {isAdminShop && (
                         <>
-                            <NavLink
-                                to="/commandes"
-                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
-                                activeClassName="bg-orange"
-                                onClick={toggleMenu}
-                                exact
-                            >
-                                Commandes
-                            </NavLink>
-                            <NavLink
-                                to="/statistiques"
-                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
-                                activeClassName="bg-orange"
-                                onClick={toggleMenu}
-                                exact
-                            >
-                                Statistiques
-                            </NavLink>
                             <NavLink
                                 to="/magasin"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
@@ -212,6 +183,15 @@ const Navbar = () => {
                                 Magasin
                             </NavLink>
                             <NavLink
+                                to="/barlist"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Liste des Bars
+                            </NavLink>
+                            <NavLink
                                 to="/produit"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
                                 activeClassName="bg-orange"
@@ -220,8 +200,109 @@ const Navbar = () => {
                             >
                                 Produit
                             </NavLink>
+                            <NavLink
+                                to="/statistiques"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Statistique
+                            </NavLink>
                         </>
                     )}
+
+                    {isGlobalAdmin && (
+                        <>
+                            <NavLink
+                                to="/statistiques"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Statistique
+                            </NavLink>
+                            <NavLink
+                                to="/produit"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Produit
+                            </NavLink>
+                            <NavLink
+                                to="/categories"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Catégorie
+                            </NavLink>
+                            <NavLink
+                                to="/compte"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Compte
+                            </NavLink>
+                            <NavLink
+                                to="/building"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Bâtiment
+                            </NavLink>
+                        </>
+                    )}
+
+                    {isAdminBar && (
+                        <>
+                            <NavLink
+                                to="/stockbar"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Stock
+                            </NavLink>
+                            <NavLink
+                                to="/seuilalerte"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Alerte
+                            </NavLink>
+                            <NavLink
+                                to="/commandes"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Commande
+                            </NavLink>
+                        </>
+                    )}
+
+                    <NavLink
+                        to="/"
+                        className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                        activeClassName="bg-orange"
+                        onClick={toggleMenu}
+                        exact
+                    >
+                        Déconnexion
+                    </NavLink>
                 </div>
             )}
         </nav>
