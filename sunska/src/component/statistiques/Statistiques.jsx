@@ -6,9 +6,11 @@ import * as XLSX from 'xlsx';
 const Statistiques = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedBar, setSelectedBar] = useState(null);
-    const [statType, setStatType] = useState('product'); // 'product' or 'productBar'
+    const [statType, setStatType] = useState('product'); // 'product' or 'productBar' or 'category'
     const [products, setProducts] = useState([]);
     const [bars, setBars] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [sales, setSales] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -35,6 +37,15 @@ const Statistiques = () => {
                 const barsData = await barResponse.json();
                 const fetchedBars = barsData.map(bar => ({ value: bar.id, label: bar.barName }));
                 setBars(fetchedBars);
+
+                // Fetch categories
+                const categoriesResponse = await fetch('http://localhost:8080/product-category');
+                if (!categoriesResponse.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                const categoriesData = await categoriesResponse.json();
+                const fetchedCategories = categoriesData.map(category => ({ value: category.id, label: category.name }));
+                setCategories(fetchedCategories);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -46,7 +57,7 @@ const Statistiques = () => {
 
     useEffect(() => {
         const fetchSales = async () => {
-            if (selectedProduct) {
+            if (statType === 'product' && selectedProduct) {
                 try {
                     setLoading(true);
                     const salesResponse = await fetch(`http://localhost:8080/orders/sales/product/${selectedProduct.value}`);
@@ -60,18 +71,41 @@ const Statistiques = () => {
                 } finally {
                     setLoading(false);
                 }
+            } else if (statType === 'category' && selectedCategory) {
+                try {
+                    setLoading(true);
+                    const salesResponse = await fetch(`http://localhost:8080/orders/sales/category/${selectedCategory.value}`);
+                    if (!salesResponse.ok) {
+                        throw new Error('Failed to fetch sales data');
+                    }
+                    const salesData = await salesResponse.json();
+                    setSales(salesData);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
             } else {
-                setSales([]);
+                setSales([]); // Clear the sales data when statType is changed to "product"
             }
         };
         fetchSales();
-    }, [selectedProduct]);
+    }, [selectedProduct, selectedCategory, statType]);
 
     const exportToExcel = () => {
-        const data = sales[0]?.sales.map(sale => ({
-            Bar: sale.barName,
-            Sales: sale.quantity,
-        }));
+        let data;
+        if (statType === 'product') {
+            data = sales[0]?.sales.map(sale => ({
+                Bar: sale.barName,
+                Sales: sale.quantity,
+            }));
+        } else if (statType === 'category') {
+            data = sales.map(sale => ({
+                Product: sale.nameProduct,
+                Sales: sale.qtt,
+                OrderID: sale.orderId,
+            }));
+        }
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Data');
@@ -83,8 +117,10 @@ const Statistiques = () => {
     const showExportButton = () => {
         if (statType === 'product') {
             return selectedProduct !== null;
-        } else {
-            return selectedProduct !== null && selectedBar !== null;
+        // } else if (statType === 'productBar') {
+        //     return selectedProduct !== null && selectedBar !== null;
+        } else if (statType === 'category') {
+            return selectedCategory !== null;
         }
     };
 
@@ -105,32 +141,57 @@ const Statistiques = () => {
                 <Select
                     options={[
                         {value: 'product', label: 'Nb de vente par produits'},
-                        {value: 'productBar', label: 'Nb de vente par produits et par bar'}
+                        // {value: 'productBar', label: 'Nb de vente par produits et par bar'},
+                        {value: 'category', label: 'Nb de vente par catégories'}
                     ]}
                     value={{
                         value: statType,
-                        label: statType === 'product' ? 'Nb de vente par produits' : 'Nb de vente par produits et par bar'
+                        label: statType === 'product' ? 'Nb de vente par produits' : statType === 'productBar' ? 'Nb de vente par produits et par bar' : 'Nb de vente par catégories'
                     }}
                     onChange={(e) => setStatType(e.value)}
                 />
             </div>
-            <div className="mb-4">
-                <Select
-                    options={products}
-                    value={selectedProduct}
-                    onChange={setSelectedProduct}
-                    isClearable
-                    placeholder="Choose a product..."
-                />
-            </div>
-            {statType === 'productBar' && (
+            {statType === 'product' && (
                 <div className="mb-4">
                     <Select
-                        options={bars}
-                        value={selectedBar}
-                        onChange={setSelectedBar}
+                        options={products}
+                        value={selectedProduct}
+                        onChange={setSelectedProduct}
                         isClearable
-                        placeholder="Choose a bar..."
+                        placeholder="Choose a product..."
+                    />
+                </div>
+            )}
+            {/*{statType === 'productBar' && (*/}
+            {/*    <>*/}
+            {/*        <div className="mb-4">*/}
+            {/*            <Select*/}
+            {/*                options={products}*/}
+            {/*                value={selectedProduct}*/}
+            {/*                onChange={setSelectedProduct}*/}
+            {/*                isClearable*/}
+            {/*                placeholder="Choose a product..."*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*        <div className="mb-4">*/}
+            {/*            <Select*/}
+            {/*                options={bars}*/}
+            {/*                value={selectedBar}*/}
+            {/*                onChange={setSelectedBar}*/}
+            {/*                isClearable*/}
+            {/*                placeholder="Choose a bar..."*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </>*/}
+            {/*)}*/}
+            {statType === 'category' && (
+                <div className="mb-4">
+                    <Select
+                        options={categories}
+                        value={selectedCategory}
+                        onChange={setSelectedCategory}
+                        isClearable
+                        placeholder="Choose a category..."
                     />
                 </div>
             )}
@@ -145,15 +206,22 @@ const Statistiques = () => {
                 <table className="w-full mb-4">
                     <thead>
                     <tr>
-                        <th className="px-4 py-2">Bar</th>
-                        <th className="px-4 py-2">Sales</th>
+                        {statType === 'product' && <th className="px-4 py-2">Bar</th>}
+                        {statType === 'category' && <th className="px-4 py-2">Produit</th>}
+                        <th className="px-4 py-2">Nombre de ventes</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {sales[0]?.sales.map((sale, index) => (
-                        <tr key={index}>
+                    {statType === 'product' && Array.isArray(sales[0]?.sales) && sales[0].sales.map((sale, index) => (
+                        <tr key={index} className={index % 2 === 0 ? 'bg-tabvertbleu' : ''}>
                             <td className="border px-4 py-2">{sale.barName}</td>
                             <td className="border px-4 py-2">{sale.quantity}</td>
+                        </tr>
+                    ))}
+                    {statType === 'category' && Array.isArray(sales) && sales.map((sale, index) => (
+                        <tr key={index} className={index % 2 === 0 ? 'bg-tabvertbleu' : ''}>
+                            <td className="border px-4 py-2">{sale.nameProduct}</td>
+                            <td className="border px-4 py-2">{sale.qtt}</td>
                         </tr>
                     ))}
                     </tbody>
