@@ -20,6 +20,7 @@ import CommandeDetailsInProgressPage from "./page/CommandeDetailsInProgressPage"
 import CommandeDetailsPastPage from "./page/CommandeDetailsPastPage";
 import CategoriesPage from "./page/CategoriesPage";
 import CreateCategoriePage from "./page/CreateCategoriePage";
+import AddStockBuildingPage from "./page/AddStockBuildingPage";
 
 function App() {
     return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="/building/:id" element={<AssignedUserToBuildingPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/createCategorie" element={<CreateCategoriePage />} />
+            <Route path="/addstockbuilding" element={<AddStockBuildingPage />} />
         </Routes>
       </BrowserRouter>
   );

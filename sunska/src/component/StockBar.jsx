@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const StockBar = () => {
     const [products, setProducts] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [buildingId, setBuildingId] = useState(null);
     const [buildingName, setBuildingName] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Récupérer l'objet du bâtiment depuis localStorage
@@ -77,7 +80,7 @@ const StockBar = () => {
                         : product
                 ));
                 setShowConfirmation(false);
-                alert('Vente validée');
+                // alert('Vente validée');
             } else {
                 console.error('Erreur lors de la validation de la vente:', response.statusText);
                 alert('Erreur lors de la validation de la vente');
@@ -88,17 +91,26 @@ const StockBar = () => {
         }
     };
 
-
     const handleCancelSale = () => {
         setShowConfirmation(false);
     };
 
     const productsToSell = products.filter(product => product.quantity > 0);
 
+    const handleAddProduct = () => {
+        navigate(`/addstockbuilding?buildingId=${buildingId}`);
+    };
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4 text-center">{`Stock du ${buildingName}`}</h1>
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-between mb-4">
+                <button
+                    className="bg-vertbleu font-bold text-white px-4 py-2 rounded"
+                    onClick={handleAddProduct}
+                >
+                    Ajouter un produit
+                </button>
                 <button
                     className="bg-orange font-bold text-white px-4 py-2 rounded"
                     onClick={handleValidateSale}
@@ -147,30 +159,30 @@ const StockBar = () => {
 
             {showConfirmation && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-4 rounded shadow-lg">
-                        <h2 className="text-xl font-bold mb-4">Confirmer la vente</h2>
+                    <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+                        <h2 className="text-2xl font-bold mb-4">Valider la vente</h2>
                         {productsToSell.length > 0 ? (
-                            <ul className="mb-4">
+                            <ul className="mb-6">
                                 {productsToSell.map(product => (
-                                    <li key={product.id}>{product.name}: {product.quantity} / {product.stockId} / {product.buildingId}</li>
+                                    <li key={product.id} className="mb-2">{product.name} : {product.quantity}</li>
                                 ))}
                             </ul>
                         ) : (
-                            <p className="mb-4">La vente est vide.</p>
+                            <p className="mb-6">La vente est vide.</p>
                         )}
-                        <div className="flex justify-end">
-                            <button
-                                className="bg-orange font-bold text-white px-4 py-2 rounded mr-2"
-                                onClick={handleConfirmSale}
-                                disabled={productsToSell.length === 0}
-                            >
-                                Valider
-                            </button>
+                        <div className="flex justify-between">
                             <button
                                 className="bg-annuler font-bold text-white px-4 py-2 rounded"
                                 onClick={handleCancelSale}
                             >
                                 Annuler
+                            </button>
+                            <button
+                                className="bg-orange font-bold text-white px-4 py-2 rounded"
+                                onClick={handleConfirmSale}
+                                disabled={productsToSell.length === 0}
+                            >
+                                Valider
                             </button>
                         </div>
                     </div>

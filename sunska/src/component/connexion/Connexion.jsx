@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import "./Connexion.css";
 
 const Connexion = () => {
@@ -97,10 +99,10 @@ const Connexion = () => {
                     {/* Bouton pour afficher/masquer le mot de passe */}
                     <button
                         type="button"
-                        className="absolute inset-y-0 right-0 px-3 py-1 bg-gray-300 text-gray-600 rounded-r-lg"
+                        className="absolute inset-y-0 right-0 px-3 py-1 text-gray-600 rounded-r-lg"
                         onClick={togglePasswordVisibility}
                     >
-                        {showPassword ? "Masquer" : "Afficher"}
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                     </button>
                 </div>
                 {error && (

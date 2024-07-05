@@ -75,7 +75,7 @@ const SeuilAlerte = () => {
                         : product
                 ));
                 setShowConfirmation(false);
-                alert('Seuil d\'alerte mis à jour');
+                // alert('Seuil d\'alerte mis à jour');
             } else {
                 console.error('Erreur lors de la mise à jour du seuil d\'alerte');
                 alert('Erreur lors de la mise à jour du seuil d\'alerte');
@@ -146,30 +146,30 @@ const SeuilAlerte = () => {
 
             {showConfirmation && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-4 rounded shadow-lg">
-                        <h2 className="text-xl font-bold mb-4">Confirmer les seuils</h2>
+                    <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+                        <h2 className="text-2xl font-bold mb-4">Confirmer les seuils</h2>
                         {productsToUpdate.length > 0 ? (
-                            <ul className="mb-4">
+                            <ul className="mb-6">
                                 {productsToUpdate.map(product => (
-                                    <li key={product.id}>{product.name}: {product.newAlertThreshold}</li>
+                                    <li key={product.id} className="mb-2">{product.name}: {product.newAlertThreshold}</li>
                                 ))}
                             </ul>
                         ) : (
-                            <p className="mb-4">Aucun seuil n'a été modifié.</p>
+                            <p className="mb-6">Aucun seuil n'a été modifié.</p>
                         )}
-                        <div className="flex justify-end">
-                            <button
-                                className="bg-orange font-bold text-white px-4 py-2 rounded mr-2"
-                                onClick={handleConfirmThreshold}
-                                disabled={productsToUpdate.length === 0}
-                            >
-                                Valider
-                            </button>
+                        <div className="flex justify-between">
                             <button
                                 className="bg-annuler font-bold text-white px-4 py-2 rounded"
                                 onClick={handleCancelThreshold}
                             >
                                 Annuler
+                            </button>
+                            <button
+                                className="bg-orange font-bold text-white px-4 py-2 rounded"
+                                onClick={handleConfirmThreshold}
+                                disabled={productsToUpdate.length === 0}
+                            >
+                                Valider
                             </button>
                         </div>
                     </div>
