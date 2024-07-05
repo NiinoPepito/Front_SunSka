@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -84,7 +84,9 @@ const Buildings = () => {
                                         className="border p-2 h-10 w-full"
                                     />
                                 ) : (
-                                    user.name
+                                    <Link to={`/building/${user.id}`}>
+                                        {user.name}
+                                    </Link>
                                 )}
                             </td>
                             <td className="py-2 px-4 border-b text-center">
