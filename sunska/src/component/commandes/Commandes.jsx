@@ -1,26 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Commandes = () => {
     const [selectedTab, setSelectedTab] = useState('ongoing');
+    const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
-    const orders = [
-        { id: 1, createdAt: '2024-01-01', updatedAt: '2024-01-05', status: 'Livraison en cours' },
-        { id: 2, createdAt: '2024-01-02', updatedAt: '2024-01-06', status: 'En préparation' },
-        { id: 3, createdAt: '2024-01-03', updatedAt: '2024-01-07', status: 'Validé' },
-        { id: 4, createdAt: '2024-01-04', updatedAt: '2024-01-08', status: 'Annulé' },
-    ];
+    useEffect(() => {
+        const userBuildingString = localStorage.getItem('userBuilding');
+        if (userBuildingString) {
+            const userBuilding = JSON.parse(userBuildingString);
+            const buildingId = userBuilding.id;
+            fetchOrders(buildingId);
+        }
+    }, []);
 
-    const ongoingOrders = orders.filter(order => order.status === 'Livraison en cours' || order.status === 'En préparation');
-    const pastOrders = orders.filter(order => order.status === 'Validé' || order.status === 'Annulé');
+    const fetchOrders = async (buildingId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/orders/building/${buildingId}/details`);
+            if (response.ok) {
+                const data = await response.json();
+                setOrders(data);
+            } else {
+                console.error('Failed to fetch orders:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error connecting to server:', error);
+        }
+    };
 
     const handleDetailsInProgressClick = (orderId) => {
         navigate(`/commandedetailsinprogress/${orderId}`);
     };
+
     const handleDetailspastClick = (orderId) => {
         navigate(`/commandedetailspast/${orderId}`);
     };
+
+    // Filtrer les commandes en cours et passées
+    const ongoingOrders = orders.filter(order => ['CREATED', 'PENDING'].includes(order.status));
+    const pastOrders = orders.filter(order => ['DELIVERED', 'CANCELLED'].includes(order.status));
 
     const renderOngoingOrdersTable = (orders) => (
         <table className="min-w-full bg-white">

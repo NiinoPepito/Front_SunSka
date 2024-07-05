@@ -1,22 +1,56 @@
-// BarDetail.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 const BarDetail = () => {
     const { id } = useParams();
-    const initialProducts = [
-        { id: 1, name: 'Produit A', stockBar: 10, stockMagasin: 20, orderQuantity: 0 },
-        { id: 2, name: 'Produit B', stockBar: 15, stockMagasin: 25, orderQuantity: 0 },
-        { id: 3, name: 'Produit C', stockBar: 20, stockMagasin: 30, orderQuantity: 0 },
-        // Ajoutez plus de produits ici
-    ];
-
-    const [products, setProducts] = useState(initialProducts);
+    const [barName, setBarName] = useState('');
+    const [products, setProducts] = useState([]);
     const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
 
-    const handleOrderQuantityChange = (id, quantity) => {
+    useEffect(() => {
+        fetchBarName();
+        fetchStockProducts();
+    }, []);
+
+    const fetchBarName = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/buildings/${id}/name`);
+            if (response.ok) {
+                const data = await response.text(); // Directly retrieve the name as text
+                setBarName(data); // Set the barName state with the fetched name
+            } else {
+                console.error('Error fetching bar name:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error connecting to server:', error);
+        }
+    };
+
+    const fetchStockProducts = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/stock/2024/${id}/alert`);
+            if (response.ok) {
+                const data = await response.json();
+                // Initialize orderQuantity for each product to 0 and associate with stockId
+                const productsWithQuantity = data.map(product => ({
+                    ...product,
+                    orderQuantity: 0,
+                    stockId: id
+                }));
+                setProducts(productsWithQuantity);
+            } else {
+                console.error('Error fetching stock products:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error connecting to server:', error);
+        }
+    };
+
+    const handleOrderQuantityChange = (productId, stockId, quantity) => {
         setProducts(products.map(product =>
-            product.id === id ? { ...product, orderQuantity: quantity } : product
+            product.id === productId && product.stockId === stockId
+                ? { ...product, orderQuantity: quantity }
+                : product
         ));
     };
 
@@ -24,12 +58,38 @@ const BarDetail = () => {
         setShowOrderConfirmation(true);
     };
 
-    const handleConfirmOrder = () => {
-        // Logic for confirming the order
-        setShowOrderConfirmation(false);
-        setProducts(products.map(product => ({ ...product, orderQuantity: 0 })));
-        alert('Commande générée');
+    const handleConfirmOrder = async () => {
+        try {
+            // Prepare the data structure for sending to the server
+            const stockQtts = productsToOrder.map(product => [product.id, product.orderQuantity]);
+            const data = {
+                buildingId: id,
+                stockQtts: stockQtts
+            };
+
+            // Send the order data to the server
+            const response = await fetch('http://localhost:8080/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                setShowOrderConfirmation(false);
+                setProducts(products.map(product => ({ ...product, orderQuantity: 0 })));
+                alert('Commande générée');
+            } else {
+                console.error('Failed to generate order:', response.statusText);
+                alert('Failed to generate order. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error confirming order:', error);
+            alert('Error confirming order. Please try again.');
+        }
     };
+
 
     const handleCancelOrder = () => {
         setShowOrderConfirmation(false);
@@ -39,7 +99,7 @@ const BarDetail = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4 text-center">Stock du Bar {id}</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center">{`Stock du Bar ${barName}`}</h1>
             <div className="flex justify-end mb-4">
                 <button
                     className="bg-orange text-white px-4 py-2 rounded"
@@ -61,7 +121,9 @@ const BarDetail = () => {
                     <tbody>
                     {products.map((product, index) => (
                         <tr key={product.id} className={index % 2 === 0 ? "bg-tabvertbleu" : ""}>
-                            <td className="py-2 px-4 border-b text-left">{product.name}</td>
+                            <td className={`py-2 px-4 border-b text-left ${product.isAlert ? 'text-red-500' : ''}`}>
+                                {`${product.productName} - ${product.productCapacity} ${product.productUnit}`}
+                            </td>
                             <td className="py-2 px-4 border-b text-center">{product.stockBar}</td>
                             <td className="py-2 px-4 border-b text-center">{product.stockMagasin}</td>
                             <td className="py-2 px-4 border-b text-center">
@@ -72,7 +134,9 @@ const BarDetail = () => {
                                     value={product.orderQuantity}
                                     onFocus={(e) => e.target.value === '0' && (e.target.value = '')}
                                     onBlur={(e) => e.target.value === '' && (e.target.value = '0')}
-                                    onChange={(e) => handleOrderQuantityChange(product.id, parseInt(e.target.value) || 0)}
+                                    onChange={(e) =>
+                                        handleOrderQuantityChange(product.id, product.stockId, parseInt(e.target.value) || 0)
+                                    }
                                 />
                             </td>
                         </tr>
@@ -96,7 +160,7 @@ const BarDetail = () => {
                         {productsToOrder.length > 0 ? (
                             <ul className="mb-4">
                                 {productsToOrder.map(product => (
-                                    <li key={product.id}>{product.name}: {product.orderQuantity}</li>
+                                    <li key={product.id}>{product.productName}: {product.orderQuantity}</li>
                                 ))}
                             </ul>
                         ) : (
