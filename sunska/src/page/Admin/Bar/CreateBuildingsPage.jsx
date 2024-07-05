@@ -1,13 +1,14 @@
 import Navbar from "../../../component/Navbar";
-import CreateAccount from "../../../component/Admin/Accounts/CreateAccount";
+import CreateBuilding from "../../../component/Admin/Buildings/CreateBuildings";
 
-const CreateAccountPage = () => {
+
+const CreateBuildingPage = () => {
     return (
         <>
             <Navbar />
-            <CreateAccount />
+            <CreateBuilding />
         </>
     );
 };
 
-export default CreateAccountPage;
+export default CreateBuildingPage;

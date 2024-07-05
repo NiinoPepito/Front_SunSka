@@ -13,6 +13,7 @@ import CreateProductsPage from "./page/Admin/Products/CreateProductsPage";
 import CreateAccountsPage from "./page/Admin/Accounts/CreateAccountsPage";
 import UpdatePasswordPage from "./page/Admin/Accounts/UpdatePasswordPage";
 import BuildingsPage from "./page/Admin/Bar/BuildingsPage";
+import CreateBuildingsPage from "./page/Admin/Bar/CreateBuildingsPage";
 import SeuilAlertePage from "./page/SeuilAlertePage";
 import CommandeDetailsInProgressPage from "./page/CommandeDetailsInProgressPage";
 import CommandeDetailsPastPage from "./page/CommandeDetailsPastPage";
@@ -37,8 +38,9 @@ function App() {
             <Route path="/compte" element={<AccountsPage />} />
             <Route path="/createCompte" element={<CreateAccountsPage />} />
             <Route path="/:id/password" element={<UpdatePasswordPage />} />
-            <Route path="/building" element={<BuildingsPage />} />
             <Route path="/seuilalerte" element={<SeuilAlertePage />} />
+            <Route path="/building" element={<BuildingsPage />} />
+            <Route path="/createBuilding" element={<CreateBuildingsPage />} />
 
         </Routes>
       </BrowserRouter>

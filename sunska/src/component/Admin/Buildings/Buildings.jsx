@@ -7,16 +7,16 @@ const Buildings = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const initialUsers = [
-        { id: 1, name: 'Magasin A', theme: 'Magasin' },
-        { id: 2, name: 'Bar B', theme: 'Bar' },
-        { id: 3, name: 'Bar C', theme: 'Bar' },
+        { id: 1, name: 'Magasin A', type: 'Magasin' },
+        { id: 2, name: 'Bar B', type: 'Bar' },
+        { id: 3, name: 'Bar C', type: 'Bar' },
     ];
 
     const [users, setUsers] = useState(initialUsers);
     const [editingUserId, setEditingUserId] = useState(null);
     const [editingUser, setEditingUser] = useState({
         name: '',
-        theme: ''
+        type: ''
     });
 
     const handleDelete = (id) => {
@@ -27,12 +27,12 @@ const Buildings = () => {
         setEditingUserId(user.id);
         setEditingUser({
             name: user.name,
-            theme: user.theme
+            type: user.type
         });
     };
 
     const handleCreateUserClick = () => {
-        navigate('/createCompte');
+        navigate('/createBuilding');
     };
 
     const handleChange = (event) => {
@@ -47,7 +47,7 @@ const Buildings = () => {
         setEditingUserId(null);
         setEditingUser({
             name: '',
-            theme: ''
+            type: ''
         });
     };
 
@@ -67,7 +67,7 @@ const Buildings = () => {
                     <thead>
                     <tr>
                         <th className="py-2 px-4 border-b text-center">Nom</th>
-                        <th className="py-2 px-4 border-b text-center">Thème</th>
+                        <th className="py-2 px-4 border-b text-center">Type</th>
                         <th className="py-2 px-4 border-b text-center">Action</th>
                     </tr>
                     </thead>
@@ -90,8 +90,8 @@ const Buildings = () => {
                             <td className="py-2 px-4 border-b text-center">
                                 {editingUserId === user.id ? (
                                     <select
-                                        name="theme"
-                                        value={editingUser.theme}
+                                        name="type"
+                                        value={editingUser.type}
                                         onChange={handleChange}
                                         className="border p-2 h-10 w-full"
                                     >
@@ -99,7 +99,7 @@ const Buildings = () => {
                                         <option value="Bar">Bar</option>
                                     </select>
                                 ) : (
-                                    user.theme
+                                    user.type
                                 )}
                             </td>
                             <td className="py-2 px-4 border-b text-right">
