@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faKey, faToggleOn, faToggleOff, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 const Accounts = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const initialUsers = [
-        { id: 1, name: 'Utilisateur A', identifier: 'userA', role: 'Admin' },
-        { id: 2, name: 'Utilisateur B', identifier: 'userB', role: 'User' },
-        { id: 3, name: 'Utilisateur C', identifier: 'userC', role: 'User' },
-    ];
-
-    const [users, setUsers] = useState(initialUsers);
+    const [users, setUsers] = useState([]);
     const [editingUserId, setEditingUserId] = useState(null);
     const [editingUser, setEditingUser] = useState({
         name: '',
@@ -20,8 +14,48 @@ const Accounts = () => {
         role: ''
     });
 
-    const handleDelete = (id) => {
-        setUsers(users.filter(user => user.id !== id));
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/users');
+                const data = await response.json();
+                const fetchedUsers = data.map((user, index) => ({
+                    id: user.id,
+                    name: user.name,
+                    identifier: user.login,
+                    role: user.isAdmin ? 'Admin' : 'User',
+                    isActive: !user.isArchived
+                }));
+                setUsers(fetchedUsers);
+            } catch (error) {
+                console.error("There was an error fetching the users!", error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const handleToggleActive = async (id) => {
+        try {
+            const user = users.find(user => user.id === id);
+            const response = await fetch(`http://localhost:8080/users/${id}/archive`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ isArchived: !user.isActive })
+            });
+
+            if (response.ok) {
+                setUsers(users.map(user =>
+                    user.id === id ? { ...user, isActive: !user.isActive } : user
+                ));
+            } else {
+                console.error("Failed to toggle user status.");
+            }
+        } catch (error) {
+            console.error("There was an error toggling the user status!", error);
+        }
     };
 
     const handleEdit = (user) => {
@@ -33,6 +67,38 @@ const Accounts = () => {
         });
     };
 
+    const handleSave = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:8080/users/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: editingUser.name,
+                    login: editingUser.identifier,
+                    admin: editingUser.role === 'Admin'
+                })
+            });
+
+            if (response.ok) {
+                setUsers(users.map(user =>
+                    user.id === id ? { ...user, name: editingUser.name, identifier: editingUser.identifier, role: editingUser.role } : user
+                ));
+                setEditingUserId(null);
+                setEditingUser({
+                    name: '',
+                    identifier: '',
+                    role: ''
+                });
+            } else {
+                console.error("Failed to save user.");
+            }
+        } catch (error) {
+            console.error("There was an error saving the user!", error);
+        }
+    };
+
     const handleCreateUserClick = () => {
         navigate('/createCompte');
     };
@@ -40,18 +106,6 @@ const Accounts = () => {
     const handleChange = (event) => {
         const { name, value } = event.target;
         setEditingUser(prevState => ({ ...prevState, [name]: value }));
-    };
-
-    const handleSave = (id) => {
-        setUsers(users.map(user =>
-            user.id === id ? { ...user, ...editingUser } : user
-        ));
-        setEditingUserId(null);
-        setEditingUser({
-            name: '',
-            identifier: '',
-            role: ''
-        });
     };
 
     const handleChangePassword = (userId) => {
@@ -76,6 +130,8 @@ const Accounts = () => {
                         <th className="py-2 px-4 border-b text-center">Nom</th>
                         <th className="py-2 px-4 border-b text-center">Identifiant</th>
                         <th className="py-2 px-4 border-b text-center">Role</th>
+                        <th className="py-2 px-4 border-b text-center">Statut</th>
+                        <th className="py-2 px-2 border-b text-center"></th>
                         <th className="py-2 px-4 border-b text-center">Action</th>
                     </tr>
                     </thead>
@@ -123,26 +179,39 @@ const Accounts = () => {
                                     user.role
                                 )}
                             </td>
+                            <td className="py-2 px-4 border-b text-center">
+                                <div style={{ width: '80px', margin: 'auto' }}>
+                                    {user.isActive ? 'Actif' : 'Désactivé'}
+                                </div>
+                            </td>
+                            <td className="py-2 px-2 border-b text-center">
+                                {editingUserId === user.id && (
+                                    <button
+                                        className="text-white h-10 flex items-center justify-center"
+                                        onClick={() => handleSave(user.id)}
+                                    >
+                                        <FontAwesomeIcon icon={faCheck} className="text-blue-600" />
+                                    </button>
+                                )}
+                            </td>
                             <td className="py-2 px-4 border-b text-right">
                                 <div className="flex justify-end items-center space-x-2">
-                                    <button
-                                        className="text-white h-10 flex items-center justify-center"
-                                        onClick={() => handleEdit(user)}
-                                    >
-                                        <FontAwesomeIcon icon={faEdit} className="text-blue-600" />
-                                    </button>
-                                    <button
-                                        className="text-white h-10 flex items-center justify-center"
-                                        onClick={() => handleDelete(user.id)}
-                                    >
-                                        <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                                    </button>
-                                    <button
-                                        className="text-white h-10 flex items-center justify-center"
-                                        onClick={() => handleChangePassword(user.id)}
-                                    >
-                                        <FontAwesomeIcon icon={faKey} className="text-green-600" />
-                                    </button>
+                                    {!editingUserId && (
+                                        <>
+                                            <button
+                                                className="text-white h-10 flex items-center justify-center"
+                                                onClick={() => handleEdit(user)}
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} className="text-blue-600" />
+                                            </button>
+                                            <button
+                                                className="text-white h-10 flex items-center justify-center"
+                                                onClick={() => handleChangePassword(user.id)}
+                                            >
+                                                <FontAwesomeIcon icon={faKey} className="text-green-600" />
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </td>
                         </tr>
