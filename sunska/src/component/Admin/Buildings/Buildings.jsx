@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -6,18 +6,19 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 const Buildings = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const initialUsers = [
-        { id: 1, name: 'Magasin A', type: 'Magasin' },
-        { id: 2, name: 'Bar B', type: 'Bar' },
-        { id: 3, name: 'Bar C', type: 'Bar' },
-    ];
-
-    const [users, setUsers] = useState(initialUsers);
+    const [users, setUsers] = useState([]);
     const [editingUserId, setEditingUserId] = useState(null);
     const [editingUser, setEditingUser] = useState({
         name: '',
         type: ''
     });
+
+    useEffect(() => {
+        fetch('http://localhost:8080/buildings')
+            .then(response => response.json())
+            .then(data => setUsers(data))
+            .catch(error => console.error('Error:', error));
+    }, []);
 
     const handleDelete = (id) => {
         setUsers(users.filter(user => user.id !== id));
@@ -40,15 +41,30 @@ const Buildings = () => {
         setEditingUser(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleSave = (id) => {
-        setUsers(users.map(user =>
-            user.id === id ? { ...user, ...editingUser } : user
-        ));
-        setEditingUserId(null);
-        setEditingUser({
-            name: '',
-            type: ''
-        });
+    const handleSave = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:8080/buildings/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: editingUser.name,
+                    type: editingUser.type
+                })
+            });
+            const data = await response.json();
+            setUsers(users.map(user =>
+                user.id === id ? { ...user, ...editingUser } : user
+            ));
+            setEditingUserId(null);
+            setEditingUser({
+                name: '',
+                type: ''
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     const handleManageUsersClick = (buildingId) => {
@@ -110,8 +126,8 @@ const Buildings = () => {
                                         onChange={handleChange}
                                         className="border p-2 h-10 w-full"
                                     >
-                                        <option value="Magasin">Magasin</option>
-                                        <option value="Bar">Bar</option>
+                                        <option value="SHOP">SHOP</option>
+                                        <option value="BAR">BAR</option>
                                     </select>
                                 ) : (
                                     user.type
