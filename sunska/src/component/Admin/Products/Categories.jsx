@@ -79,14 +79,14 @@ const Products = () => {
         });
     };
 
-    const handleToggleActive = async (id) => {
+    const handleToggleActive = async (id, isActive) => {
         try {
             const response = await fetch(`http://localhost:8080/products/${id}/active`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ isActif: !editingProduct.isActif }), // Toggle the current state
+                body: JSON.stringify({ isActive }),
             });
             if (response.ok) {
                 console.log('Statut du produit modifié avec succès !');
@@ -185,20 +185,20 @@ const Products = () => {
                                 <div className="flex justify-center">
                                     <button
                                         className={`h-10 flex items-center ${
-                                            product.isActif
+                                            product.isActive
                                                 ? 'text-green-600'
                                                 : 'text-red-600'
                                         }`}
-                                        onClick={() => handleToggleActive(product.id)}
+                                        onClick={() => handleToggleActive(product.id, !product.isActive)}
                                     >
                                         <FontAwesomeIcon
                                             icon={
-                                                product.isActif
+                                                product.isActive
                                                     ? faToggleOn
                                                     : faToggleOff
                                             }
                                             className={
-                                                product.isActif
+                                                product.isActive
                                                     ? 'text-green-600'
                                                     : 'text-red-600'
                                             }

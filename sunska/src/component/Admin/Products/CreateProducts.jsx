@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CreateProducts = () => {
     const [formData, setFormData] = useState({
         name: '',
+        categoryId: '',
         capacity: '',
-        unit: '',
-        unitCaisse: '',
+        unit: ''
     });
 
+    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/product-category');
+            if (response.ok) {
+                const data = await response.json();
+                setCategories(data);
+            } else {
+                console.error('Erreur lors de la récupération des catégories.');
+            }
+        } catch (error) {
+            console.error('Erreur lors de la connexion au serveur :', error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,25 +38,29 @@ const CreateProducts = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Assuming you have a function to save the product
-        saveAccount(formData).then(() => {
-            navigate('/produit'); // Navigate back to products page
-        });
+        try {
+            const response = await fetch('http://localhost:8080/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            if (response.ok) {
+                console.log('Produit ajouté avec succès !');
+                navigate('/produit');
+            } else {
+                console.error('Erreur lors de l\'ajout du produit.');
+            }
+        } catch (error) {
+            console.error('Erreur lors de la connexion au serveur :', error);
+        }
     };
 
     const handleBack = () => {
         navigate('/produit');
-    };
-
-    const saveAccount = async (productData) => {
-        // Implement your save logic here, for example, an API call
-        // This is a placeholder implementation
-        return new Promise((resolve) => {
-            console.log('Produits sauvegardés', productData);
-            resolve();
-        });
     };
 
     return (
@@ -55,6 +78,26 @@ const CreateProducts = () => {
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     required
                 />
+            </div>
+            <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categoryId">
+                    Catégorie
+                </label>
+                <select
+                    id="categoryId"
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    required
+                >
+                    <option value="">Sélectionnez une catégorie</option>
+                    {categories.map(category => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                    ))}
+                </select>
             </div>
             <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="capacity">
@@ -82,19 +125,6 @@ const CreateProducts = () => {
                     onChange={handleChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     required
-                />
-            </div>
-            <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="unitCaisse">
-                    Nombre de palettes
-                </label>
-                <input
-                    type="text"
-                    id="unitCaisse"
-                    name="unitCaisse"
-                    value={formData.unitCaisse}
-                    onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
             </div>
             <div className="flex items-center justify-between">

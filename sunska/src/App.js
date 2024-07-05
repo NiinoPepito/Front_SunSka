@@ -18,6 +18,8 @@ import AssignedUserToBuildingPage from "./page/Admin/Bar/AssignedUserToBuildingP
 import SeuilAlertePage from "./page/SeuilAlertePage";
 import CommandeDetailsInProgressPage from "./page/CommandeDetailsInProgressPage";
 import CommandeDetailsPastPage from "./page/CommandeDetailsPastPage";
+import CategoriesPage from "./page/CategoriesPage";
+import CreateCategoriePage from "./page/CreateCategoriePage";
 
 function App() {
     return (
@@ -43,7 +45,9 @@ function App() {
             <Route path="/building" element={<BuildingsPage />} />
             <Route path="/createBuilding" element={<CreateBuildingsPage />} />
             <Route path="/building/:id" element={<AssignedUserToBuildingPage />} />
-
+            <Route path="/buildings" element={<BuildingsPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/createCategorie" element={<CreateCategoriePage />} />
 
         </Routes>
       </BrowserRouter>

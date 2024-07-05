@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faKey, faToggleOn, faToggleOff, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faKey, faTimes, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 
 const Accounts = () => {
     const { id } = useParams();
@@ -18,8 +18,11 @@ const Accounts = () => {
         const fetchUsers = async () => {
             try {
                 const response = await fetch('http://localhost:8080/users');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch users.');
+                }
                 const data = await response.json();
-                const fetchedUsers = data.map((user, index) => ({
+                const fetchedUsers = data.map(user => ({
                     id: user.id,
                     name: user.name,
                     identifier: user.login,
@@ -39,7 +42,7 @@ const Accounts = () => {
         try {
             const user = users.find(user => user.id === id);
             const response = await fetch(`http://localhost:8080/users/${id}/archive`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -99,8 +102,13 @@ const Accounts = () => {
         }
     };
 
-    const handleCreateUserClick = () => {
-        navigate('/createCompte');
+    const handleCancelEdit = () => {
+        setEditingUserId(null);
+        setEditingUser({
+            name: '',
+            identifier: '',
+            role: ''
+        });
     };
 
     const handleChange = (event) => {
@@ -118,7 +126,7 @@ const Accounts = () => {
             <div className="flex justify-end mb-4">
                 <button
                     className="bg-orange text-white px-4 py-2 rounded h-10"
-                    onClick={handleCreateUserClick}
+                    onClick={() => navigate('/createCompte')}
                 >
                     Créer un compte
                 </button>
@@ -130,8 +138,7 @@ const Accounts = () => {
                         <th className="py-2 px-4 border-b text-center">Nom</th>
                         <th className="py-2 px-4 border-b text-center">Identifiant</th>
                         <th className="py-2 px-4 border-b text-center">Role</th>
-                        <th className="py-2 px-4 border-b text-center">Statut</th>
-                        <th className="py-2 px-2 border-b text-center"></th>
+                        <th className="py-2 px-4 border-b text-center">Actif</th>
                         <th className="py-2 px-4 border-b text-center">Action</th>
                     </tr>
                     </thead>
@@ -180,39 +187,58 @@ const Accounts = () => {
                                 )}
                             </td>
                             <td className="py-2 px-4 border-b text-center">
-                                <div style={{ width: '80px', margin: 'auto' }}>
-                                    {user.isActive ? 'Actif' : 'Désactivé'}
-                                </div>
-                            </td>
-                            <td className="py-2 px-2 border-b text-center">
-                                {editingUserId === user.id && (
-                                    <button
-                                        className="text-white h-10 flex items-center justify-center"
-                                        onClick={() => handleSave(user.id)}
-                                    >
-                                        <FontAwesomeIcon icon={faCheck} className="text-blue-600" />
-                                    </button>
+                                {editingUserId === user.id ? (
+                                    <div style={{width: '80px', margin: 'auto'}}>
+                                        {user.isActive ? 'Actif' : 'Désactivé'}
+                                    </div>
+                                ) : (
+                                    <div className="flex justify-center">
+                                        <button
+                                            className={`h-10 flex items-center ${
+                                                user.isActive ? 'text-green-600' : 'text-red-600'
+                                            }`}
+                                            onClick={() => handleToggleActive(user.id)}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={user.isActive ? faToggleOn : faToggleOff}
+                                                className={user.isActive ? 'text-green-600' : 'text-red-600'}
+                                            />
+                                        </button>
+                                    </div>
                                 )}
                             </td>
-                            <td className="py-2 px-4 border-b text-right">
-                                <div className="flex justify-end items-center space-x-2">
-                                    {!editingUserId && (
-                                        <>
-                                            <button
-                                                className="text-white h-10 flex items-center justify-center"
-                                                onClick={() => handleEdit(user)}
-                                            >
-                                                <FontAwesomeIcon icon={faEdit} className="text-blue-600" />
-                                            </button>
-                                            <button
-                                                className="text-white h-10 flex items-center justify-center"
-                                                onClick={() => handleChangePassword(user.id)}
-                                            >
-                                                <FontAwesomeIcon icon={faKey} className="text-green-600" />
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
+                            <td className="py-2 px-4 border-b text-center">
+                                {editingUserId === user.id ? (
+                                    <div className="flex justify-end items-center space-x-2">
+                                        <button
+                                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                                            onClick={() => handleSave(user.id)}
+                                        >
+                                            Valider
+                                        </button>
+                                        <button
+                                            className="bg-red-500 text-white px-4 py-2 rounded"
+                                            onClick={() => handleCancelEdit()}
+                                        >
+                                            Annuler
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex justify-end items-center space-x-2">
+                                        <button
+                                            className="text-blue-600 h-10 flex items-center justify-center"
+                                            onClick={() => handleEdit(user)}
+                                        >
+                                            <FontAwesomeIcon icon={faEdit} className="text-blue-600"/>
+                                        </button>
+                                        <button
+                                            className="text-green-600 h-10 flex items-center justify-center"
+                                            onClick={() => handleChangePassword(user.id)}
+                                        >
+                                            <FontAwesomeIcon icon={faKey} className="text-green-600"/>
+                                        </button>
+                                    </div>
+                                )}
                             </td>
                         </tr>
                     ))}

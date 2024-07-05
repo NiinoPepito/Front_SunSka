@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const UpdatePassword = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
+const CreateCategory = () => {
     const [formData, setFormData] = useState({
-        password: '',
+        name: '',
     });
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -18,10 +18,9 @@ const UpdatePassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await fetch(`http://localhost:8080/users/${id}/password`, {
-                method: 'PUT',
+            const response = await fetch('http://localhost:8080/product-category', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -29,31 +28,33 @@ const UpdatePassword = () => {
             });
 
             if (response.ok) {
-                console.log('Password updated successfully');
-                navigate('/compte');
+                console.log('Catégorie créée avec succès.');
+                navigate('/categories'); // Navigate back to categories page
             } else {
-                console.error('Failed to update password');
+                console.error('Erreur lors de la création de la catégorie.');
+                // Handle error as needed
             }
         } catch (error) {
-            console.error('Error updating password:', error);
+            console.error('Erreur lors de la connexion au serveur :', error);
+            // Handle error as needed
         }
     };
 
     const handleBack = () => {
-        navigate('/compte'); // Navigate back to the accounts page
+        navigate('/categories');
     };
 
     return (
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-4 bg-white shadow-md rounded">
             <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                    Mot de passe
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+                    Nom de la catégorie
                 </label>
                 <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     required
@@ -62,13 +63,13 @@ const UpdatePassword = () => {
             <div className="flex items-center justify-between">
                 <button
                     type="submit"
-                    className="bg-vertbleu hover:bg-orange text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    className="bg-vertbleu text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
-                    Modifier
+                    Valider
                 </button>
                 <button
                     type="button"
-                    className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    className="bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
                     onClick={handleBack}
                 >
                     Retour
@@ -78,4 +79,4 @@ const UpdatePassword = () => {
     );
 };
 
-export default UpdatePassword;
+export default CreateCategory;
