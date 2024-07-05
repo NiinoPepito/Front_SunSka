@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -7,33 +7,88 @@ const Statistiques = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedBar, setSelectedBar] = useState(null);
     const [statType, setStatType] = useState('product'); // 'product' or 'productBar'
+    const [products, setProducts] = useState([]);
+    const [bars, setBars] = useState([]);
+    const [sales, setSales] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const products = ['Product 1', 'Product 2', 'Product 3']; // Replace with your actual data
-    const bars = ['Bar 1', 'Bar 2', 'Bar 3']; // Replace with your actual data
-    const salesData = {
-        // Replace with your actual data
-        // This is a nested object where the first key is the product and the second key is the bar
-        'Product 1': { 'Bar 1': 10, 'Bar 2': 20, 'Bar 3': 30 },
-        'Product 2': { 'Bar 1': 40, 'Bar 2': 50, 'Bar 3': 60 },
-        'Product 3': { 'Bar 1': 70, 'Bar 2': 80, 'Bar 3': 90 },
-    };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
 
-    const productOptions = products.map(product => ({ value: product, label: product }));
-    const barOptions = bars.map(bar => ({ value: bar, label: bar }));
+                // Fetch products
+                const productResponse = await fetch('http://localhost:8080/products');
+                if (!productResponse.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+                const productsData = await productResponse.json();
+                const fetchedProducts = productsData.map(product => ({ value: product.id, label: product.name }));
+                setProducts(fetchedProducts);
+
+                // Fetch bars (hardcoded for 2024)
+                const barResponse = await fetch('http://localhost:8080/buildings/2024/bars');
+                if (!barResponse.ok) {
+                    throw new Error('Failed to fetch bars');
+                }
+                const barsData = await barResponse.json();
+                const fetchedBars = barsData.map(bar => ({ value: bar.id, label: bar.barName }));
+                setBars(fetchedBars);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchSales = async () => {
+            if (selectedProduct) {
+                try {
+                    setLoading(true);
+                    const salesResponse = await fetch(`http://localhost:8080/orders/sales/product/${selectedProduct.value}`);
+                    if (!salesResponse.ok) {
+                        throw new Error('Failed to fetch sales data');
+                    }
+                    const salesData = await salesResponse.json();
+                    console.log(salesData)
+                    setSales(salesData);
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setSales([]);
+            }
+        };
+        fetchSales();
+    }, [selectedProduct]);
 
     const getSales = () => {
         if (statType === 'product') {
-            return selectedProduct ? salesData[selectedProduct.value] : {};
+            return Array.isArray(sales) ? sales.map(sale => ({
+                id: sale.orderId,
+                quantity: sale.quantity,
+                stockOrder: sale.stockOrder
+            })) : [];
         } else {
-            return selectedProduct && selectedBar ? { [selectedBar.value]: salesData[selectedProduct.value][selectedBar.value] } : {};
+            return selectedBar ? (Array.isArray(sales) ? sales.filter(sale => sale.stockOrder.stock.barId === selectedBar.value).map(sale => ({
+                id: sale.orderId,
+                quantity: sale.quantity,
+                stockOrder: sale.stockOrder
+            })) : []) : [];
         }
     };
 
     const exportToExcel = () => {
         const sales = getSales();
-        const data = Object.entries(sales).map(([key, value]) => ({
-            [statType === 'product' ? 'Bar' : 'Product']: key,
-            Sales: value,
+        const data = sales.map(sale => ({
+            [statType === 'product' ? 'Bar' : 'Product']: statType === 'product' ? sale.stockOrder.stock.barName : sale.stockOrder.stock.productName,
+            Sales: sale.quantity,
         }));
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
@@ -53,6 +108,14 @@ const Statistiques = () => {
 
     const showTable = showExportButton();
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-4 text-center">Statistiques</h1>
@@ -71,7 +134,7 @@ const Statistiques = () => {
             </div>
             <div className="mb-4">
                 <Select
-                    options={productOptions}
+                    options={products}
                     value={selectedProduct}
                     onChange={setSelectedProduct}
                     isClearable
@@ -81,7 +144,7 @@ const Statistiques = () => {
             {statType === 'productBar' && (
                 <div className="mb-4">
                     <Select
-                        options={barOptions}
+                        options={bars}
                         value={selectedBar}
                         onChange={setSelectedBar}
                         isClearable
@@ -105,10 +168,10 @@ const Statistiques = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {Object.entries(getSales()).map(([key, value], index) => (
-                        <tr key={key} className={index % 2 === 0 ? 'bg-tabvertbleu' : ''}>
-                            <td className="border-t border-b px-4 py-2">{key}</td>
-                            <td className="border-t border-b px-4 py-2">{value}</td>
+                    {Array.isArray(getSales()) && getSales().map((sale, index) => (
+                        <tr key={sale.id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
+                            <td className="border px-4 py-2">sale</td>
+                            <td className="border px-4 py-2">{sale.quantity}</td>
                         </tr>
                     ))}
                     </tbody>
