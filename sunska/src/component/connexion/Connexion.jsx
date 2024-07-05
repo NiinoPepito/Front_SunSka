@@ -55,6 +55,9 @@ const Connexion = () => {
                     if (data.role === "ADMIN" && data.building.type === "SHOP") {
                         navigate('/magasin');
                     }
+                    if (data.role === "GLOBALADMIN") {
+                        navigate('/statistiques');
+                    }
 
                 }
             } else {

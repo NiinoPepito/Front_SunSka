@@ -21,11 +21,53 @@ const Navbar = () => {
     const isAdminShop = userRole === 'ADMIN' && userBuilding.type === 'SHOP';
     const isAdminBar = userRole === 'ADMIN' && userBuilding.type === 'BAR';
     const isUserBar = userRole === 'USER' && userBuilding.type === 'BAR';
+    const isGlobalAdmin = userRole === 'GLOBALADMIN';
 
     return (
         <nav className="bg-vertbleu top-0 w-full z-50 p-4">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="hidden md:flex space-x-4">
+                    {isGlobalAdmin && (
+                        <>
+                            <NavLink
+                                to="/statistiques"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Statistiques
+                            </NavLink>
+                            <NavLink
+                                to="/produit"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Produit
+                            </NavLink>
+                            <NavLink
+                                to="/compte"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Compte
+                            </NavLink>
+                            <NavLink
+                                to="/buildings"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Bâtiments
+                            </NavLink>
+                        </>
+                    )}
+
                     {isAdminBar && (
                         <>
                             <NavLink
@@ -61,15 +103,6 @@ const Navbar = () => {
                     {/* Condition pour les liens spécifiques à l'Admin */}
                     {isAdminShop && (
                         <>
-                            {/*<NavLink*/}
-                            {/*    to="/commandes"*/}
-                            {/*    className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"*/}
-                            {/*    activeClassName="bg-orange"*/}
-                            {/*    onClick={toggleMenu}*/}
-                            {/*    exact*/}
-                            {/*>*/}
-                            {/*    Commandes*/}
-                            {/*</NavLink>*/}
                             <NavLink
                                 to="/magasin"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"

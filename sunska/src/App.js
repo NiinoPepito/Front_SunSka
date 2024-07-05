@@ -30,12 +30,11 @@ function App() {
             <Route path="/magasin" element={<MagasinPage />} />
             <Route path="/barlist" element={<BarListPage />} />
             <Route path="/bardetail/:id" element={<BarDetailPage />} />
-            <Route path="/stockbar" element={<StockBarPage />} />
             <Route path="/magasin" element={<MagasinPage />} />
             <Route path="/statistiques" element={<StatistiquesPage />} />
             <Route path="/commandes" element={<CommandesPage />} />
-          <Route path="/commandedetailsinprogress/:id" element={<CommandeDetailsInProgressPage />} />
-          <Route path="/commandedetailspast/:id" element={<CommandeDetailsPastPage />} />
+            <Route path="/commandedetailsinprogress/:id" element={<CommandeDetailsInProgressPage />} />
+            <Route path="/commandedetailspast/:id" element={<CommandeDetailsPastPage />} />
             <Route path="/produit" element={<ProductsPage />} />
             <Route path="/createProduit" element={<CreateProductsPage />} />
             <Route path="/compte" element={<AccountsPage />} />
@@ -45,10 +44,8 @@ function App() {
             <Route path="/building" element={<BuildingsPage />} />
             <Route path="/createBuilding" element={<CreateBuildingsPage />} />
             <Route path="/building/:id" element={<AssignedUserToBuildingPage />} />
-            <Route path="/buildings" element={<BuildingsPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/createCategorie" element={<CreateCategoriePage />} />
-
         </Routes>
       </BrowserRouter>
   );
