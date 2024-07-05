@@ -18,15 +18,14 @@ const Navbar = () => {
     const userBuilding = JSON.parse(localStorage.getItem('userBuilding'));
 
     // Déterminer le type d'utilisateur
-    const isAdminShop = userRole === 'Admin' || (userBuilding && userBuilding.type === 'SHOP');
-    const isAdminBar = userRole === 'Admin' && (userBuilding && userBuilding.type === 'BAR');
-    const isUserBar = userRole === 'USER' || (userBuilding && userBuilding.type === 'BAR');
+    const isAdminShop = userRole === 'ADMIN' && userBuilding.type === 'SHOP';
+    const isAdminBar = userRole === 'ADMIN' && userBuilding.type === 'BAR';
+    const isUserBar = userRole === 'USER' && userBuilding.type === 'BAR';
 
     return (
         <nav className="bg-vertbleu top-0 w-full z-50 p-4">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="hidden md:flex space-x-4">
-                    {/* Liens communs à tous */}
                     {isAdminBar && (
                         <>
                             <NavLink
@@ -38,12 +37,15 @@ const Navbar = () => {
                             >
                                 Stock
                             </NavLink>
-                        </>
-                    )}
-
-                    {/* Condition pour les liens spécifiques à l'Admin */}
-                    {isAdminShop && (
-                        <>
+                            <NavLink
+                                to="/seuilalerte"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Alerte
+                            </NavLink>
                             <NavLink
                                 to="/commandes"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
@@ -53,15 +55,21 @@ const Navbar = () => {
                             >
                                 Commandes
                             </NavLink>
-                            <NavLink
-                                to="/statistiques"
-                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
-                                activeClassName="bg-orange"
-                                onClick={toggleMenu}
-                                exact
-                            >
-                                Statistiques
-                            </NavLink>
+                        </>
+                    )}
+
+                    {/* Condition pour les liens spécifiques à l'Admin */}
+                    {isAdminShop && (
+                        <>
+                            {/*<NavLink*/}
+                            {/*    to="/commandes"*/}
+                            {/*    className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"*/}
+                            {/*    activeClassName="bg-orange"*/}
+                            {/*    onClick={toggleMenu}*/}
+                            {/*    exact*/}
+                            {/*>*/}
+                            {/*    Commandes*/}
+                            {/*</NavLink>*/}
                             <NavLink
                                 to="/magasin"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
@@ -72,6 +80,15 @@ const Navbar = () => {
                                 Magasin
                             </NavLink>
                             <NavLink
+                                to="/barlist"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Liste des Bars
+                            </NavLink>
+                            <NavLink
                                 to="/produit"
                                 className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
                                 activeClassName="bg-orange"
@@ -79,6 +96,15 @@ const Navbar = () => {
                                 exact
                             >
                                 Produit
+                            </NavLink>
+                            <NavLink
+                                to="/statistiques"
+                                className="text-white hover:bg-orange px-3 py-2 rounded-md text-sm font-medium"
+                                activeClassName="bg-orange"
+                                onClick={toggleMenu}
+                                exact
+                            >
+                                Statistiques
                             </NavLink>
                         </>
                     )}
@@ -98,9 +124,16 @@ const Navbar = () => {
                 <div className="text-white cursor-pointer md:hidden" onClick={toggleMenu}>
                     {isOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
                 </div>
-                <div className="text-white cursor-pointer" onClick={handleBellClick}>
-                    <FaBell className="w-6 h-6" />
-                </div>
+                {isAdminShop && (
+                    <div className="text-white cursor-pointer" onClick={handleBellClick}>
+                        <FaBell className="w-6 h-6" />
+                    </div>
+                )}
+                {isAdminBar && (
+                    <div className="text-white cursor-pointer" onClick={handleBellClick}>
+                        <FaBell className="w-6 h-6" />
+                    </div>
+                )}
             </div>
             {isOpen && (
                 <div className="md:hidden flex flex-col space-y-2 mt-4">

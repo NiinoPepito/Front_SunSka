@@ -46,12 +46,16 @@ const Connexion = () => {
                     localStorage.setItem('userRole', JSON.stringify(data.role));
                     localStorage.setItem('userBuilding', JSON.stringify(data.building));
                     // TODO : redirect vers les routes suivant le role
-                    if(data.role === "USER" || data.building.type === "BAR"){
+                    if (data.role === "ADMIN" && data.building.type === "BAR") {
+                        navigate('/commandes');
+                    }
+                    if (data.role === "USER" && data.building.type === "BAR") {
                         navigate('/stockbar');
                     }
-                    if(data.role === "Admin" || data.building.type === "SHOP"){
+                    if (data.role === "ADMIN" && data.building.type === "SHOP") {
                         navigate('/magasin');
                     }
+
                 }
             } else {
                 setError('Erreur lors de la connexion. Veuillez réessayer.');

@@ -5,7 +5,6 @@ const StockBarPage = () => {
     return (
         <>
             <Navbar />
-
             <StockBar />
         </>
     );

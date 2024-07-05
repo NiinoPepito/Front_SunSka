@@ -1,114 +1,103 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Commandes = () => {
-    const pendingOrder = true, 
-    testOrder = false, 
-    deliveredOrder = false;
+    const [selectedTab, setSelectedTab] = useState('ongoing');
+    const navigate = useNavigate();
 
-    const [pending, setPending] = useState(pendingOrder);
-    const [test, setTest] = useState(testOrder);
-    const [delivered, setDelivered] = useState(deliveredOrder);
+    const orders = [
+        { id: 1, createdAt: '2024-01-01', updatedAt: '2024-01-05', status: 'Livraison en cours' },
+        { id: 2, createdAt: '2024-01-02', updatedAt: '2024-01-06', status: 'En préparation' },
+        { id: 3, createdAt: '2024-01-03', updatedAt: '2024-01-07', status: 'Validé' },
+        { id: 4, createdAt: '2024-01-04', updatedAt: '2024-01-08', status: 'Annulé' },
+    ];
 
-    const getChecked = () => {
-        return document.querySelector(
-            'input[name="commandes-type-radio"]:checked'
-          )?.value ?? "pending"
-    }
+    const ongoingOrders = orders.filter(order => order.status === 'Livraison en cours' || order.status === 'En préparation');
+    const pastOrders = orders.filter(order => order.status === 'Validé' || order.status === 'Annulé');
 
-    const handleRadioChecked = () => {
-        let selectedOption = getChecked();
+    const handleDetailsInProgressClick = (orderId) => {
+        navigate(`/commandedetailsinprogress/${orderId}`);
+    };
+    const handleDetailspastClick = (orderId) => {
+        navigate(`/commandedetailspast/${orderId}`);
+    };
 
-        if (selectedOption === "pending") {
-            setPending(true);
-            setTest(false);
-            setDelivered(false);
-        } else if (selectedOption === "test") {
-            setPending(false);
-            setTest(true);
-            setDelivered(false);
-        } else if (selectedOption === "delivered") {
-            setPending(false);
-            setTest(false);
-            setDelivered(true);
-        }
-      }
+    const renderOngoingOrdersTable = (orders) => (
+        <table className="min-w-full bg-white">
+            <thead>
+            <tr>
+                <th className="py-2 px-4 border-b text-left">N°</th>
+                <th className="py-2 px-4 border-b text-left">Date de création</th>
+                <th className="py-2 px-4 border-b text-left">Date de dernière maj</th>
+                <th className="py-2 px-4 border-b text-left">Statut</th>
+                <th className="py-2 px-4 border-b text-left">Détails</th>
+            </tr>
+            </thead>
+            <tbody>
+            {orders.map((order, index) => (
+                <tr key={order.id} className={index % 2 === 0 ? "bg-tabvertbleu" : ""}>
+                    <td className="py-2 px-4 border-b">{order.id}</td>
+                    <td className="py-2 px-4 border-b">{order.createdAt}</td>
+                    <td className="py-2 px-4 border-b">{order.updatedAt}</td>
+                    <td className="py-2 px-4 border-b">{order.status}</td>
+                    <td className="py-2 px-4 border-b">
+                        <button className="bg-orange text-white px-2 py-1 rounded" onClick={() => handleDetailsInProgressClick(order.id)}>Détails</button>
+                    </td>
+                </tr>
+            ))}
+            </tbody>
+        </table>
+    );
 
-      const orderList = [
-        {
-            id: 0,
-            status: 'pending',
-            products : [
-                { id: 1, name: 'Produit A', quantity: 10 },
-                { id: 2, name: 'Produit B', quantity: 20 },
-                { id: 3, name: 'Produit C', quantity: 20 },
-            ]
-        },
-        {
-            id: 1,
-            status: 'pending',
-            products : [
-                { id: 4, name: 'Produit D', quantity: 10 },
-                { id: 5, name: 'Produit E', quantity: 20 },
-                { id: 6, name: 'Produit F', quantity: 20 },
-            ]
-        },
-        {
-            id: 2,
-            status: 'delivered',
-            products : [
-                { id: 1, name: 'Produit A', quantity: 10 },
-                { id: 4, name: 'Produit D', quantity: 20 },
-                { id: 5, name: 'Produit E', quantity: 20 },
-            ]
-        }
-      ];
-
-      const [orders] = useState(orderList);
-
+    const renderPastOrdersTable = (orders) => (
+        <table className="min-w-full bg-white">
+            <thead>
+            <tr>
+                <th className="py-2 px-4 border-b text-left">N°</th>
+                <th className="py-2 px-4 border-b text-left">Date de création</th>
+                <th className="py-2 px-4 border-b text-left">Date de fin</th>
+                <th className="py-2 px-4 border-b text-left">Statut</th>
+                <th className="py-2 px-4 border-b text-left">Détails</th>
+            </tr>
+            </thead>
+            <tbody>
+            {orders.map((order, index) => (
+                <tr key={order.id} className={index % 2 === 0 ? "bg-tabvertbleu" : ""}>
+                    <td className="py-2 px-4 border-b">{order.id}</td>
+                    <td className="py-2 px-4 border-b">{order.createdAt}</td>
+                    <td className="py-2 px-4 border-b">{order.updatedAt}</td>
+                    <td className="py-2 px-4 border-b">{order.status}</td>
+                    <td className="py-2 px-4 border-b">
+                        <button className="bg-orange text-white px-2 py-1 rounded" onClick={() => handleDetailspastClick(order.id)}>Détails</button>
+                    </td>
+                </tr>
+            ))}
+            </tbody>
+        </table>
+    );
 
     return (
-        <>
-        <h1 className='flex justify-center text-3xl mb-3'>Commandes</h1>
-
-        <div className="flex flex-row w-fit ring-2 ring-bleugris rounded-3xl mb-3">
-            <div className="flex items-center">
-                <input id="commandes-en-cours" name="commandes-type-radio" type="radio" onChange={handleRadioChecked} checked={pending} value="pending" className="hidden peer text-blue-600 bg-gray-100 border-gray-300"/>
-                <label htmlFor="commandes-en-cours" className="p-2 text-sm font-medium rounded-l-3xl bg-gray-200 cursor-pointer peer-checked:bg-orange peer-checked:cursor-default">Commandes en cours</label>
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4 text-center">Commandes</h1>
+            <div className="flex justify-center mb-4">
+                <button
+                    className={`px-4 py-2 mr-2 rounded ${selectedTab === 'ongoing' ? 'bg-orange text-white' : 'bg-gray-300'}`}
+                    onClick={() => setSelectedTab('ongoing')}
+                >
+                    Commandes en cours
+                </button>
+                <button
+                    className={`px-4 py-2 rounded ${selectedTab === 'past' ? 'bg-orange text-white' : 'bg-gray-300'}`}
+                    onClick={() => setSelectedTab('past')}
+                >
+                    Commandes passées
+                </button>
             </div>
-            <div className="hidden flex items-center">
-                <input id="commandes-test" name="commandes-type-radio" type="radio" onChange={handleRadioChecked} checked={test} value="test" className="hidden peer text-blue-600 bg-gray-100 border-gray-300"/>
-                <label htmlFor="commandes-test" className="p-2 text-sm font-medium bg-gray-200 cursor-pointer peer-checked:bg-orange peer-checked:cursor-default">Commandes test</label>
-            </div>
-            <div className="flex items-center ">
-                <input id="commandes-en-passees" name="commandes-type-radio" type="radio" onChange={handleRadioChecked} checked={delivered} value="delivered" className="hidden peer text-blue-600 bg-gray-100 border-gray-300"/>
-                <label htmlFor="commandes-en-passees" className="p-2 text-sm font-medium rounded-r-3xl bg-gray-200 cursor-pointer peer-checked:bg-orange peer-checked:cursor-default">Commandes passées</label>
+            <div>
+                {selectedTab === 'ongoing' && renderOngoingOrdersTable(ongoingOrders)}
+                {selectedTab === 'past' && renderPastOrdersTable(pastOrders)}
             </div>
         </div>
-
-        <table className="min-w-full bg-white">
-                    <thead>
-                    <tr>
-                        <th className="py-2 px-4 border-b">n°</th>
-                        <th className="py-2 px-4 border-b">Status</th>
-                        <th className="py-2 px-4 border-b">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {orders.map((order, index) => (order.status === getChecked() &&
-                        <tr  key={order.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
-                            <td className="py-2 px-4 border-b">{order.id}</td>
-                            <td className="py-2 px-4 border-b">{order.status}</td>
-                            <td className="py-4 px-4 border-b flex justify-center">
-                                <NavLink to={`/commande/${order.id}`} className="bg-orange text-white px-3 py-1 rounded mr-2">
-                                    Détails
-                                </NavLink>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-        </>
     );
 };
 
