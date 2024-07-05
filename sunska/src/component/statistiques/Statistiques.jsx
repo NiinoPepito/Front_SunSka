@@ -54,8 +54,7 @@ const Statistiques = () => {
                         throw new Error('Failed to fetch sales data');
                     }
                     const salesData = await salesResponse.json();
-                    console.log(salesData)
-                    setSales(salesData);
+                    setSales([salesData]); // Wrap the salesData in an array
                 } catch (err) {
                     setError(err.message);
                 } finally {
@@ -68,26 +67,9 @@ const Statistiques = () => {
         fetchSales();
     }, [selectedProduct]);
 
-    const getSales = () => {
-        if (statType === 'product') {
-            return Array.isArray(sales) ? sales.map(sale => ({
-                id: sale.orderId,
-                quantity: sale.quantity,
-                stockOrder: sale.stockOrder
-            })) : [];
-        } else {
-            return selectedBar ? (Array.isArray(sales) ? sales.filter(sale => sale.stockOrder.stock.barId === selectedBar.value).map(sale => ({
-                id: sale.orderId,
-                quantity: sale.quantity,
-                stockOrder: sale.stockOrder
-            })) : []) : [];
-        }
-    };
-
     const exportToExcel = () => {
-        const sales = getSales();
-        const data = sales.map(sale => ({
-            [statType === 'product' ? 'Bar' : 'Product']: statType === 'product' ? sale.stockOrder.stock.barName : sale.stockOrder.stock.productName,
+        const data = sales[0]?.sales.map(sale => ({
+            Bar: sale.barName,
             Sales: sale.quantity,
         }));
         const worksheet = XLSX.utils.json_to_sheet(data);
@@ -163,14 +145,14 @@ const Statistiques = () => {
                 <table className="w-full mb-4">
                     <thead>
                     <tr>
-                        <th className="px-4 py-2">{statType === 'product' ? 'Bar' : 'Product'}</th>
+                        <th className="px-4 py-2">Bar</th>
                         <th className="px-4 py-2">Sales</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {Array.isArray(getSales()) && getSales().map((sale, index) => (
-                        <tr key={sale.id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
-                            <td className="border px-4 py-2">sale</td>
+                    {sales[0]?.sales.map((sale, index) => (
+                        <tr key={index}>
+                            <td className="border px-4 py-2">{sale.barName}</td>
                             <td className="border px-4 py-2">{sale.quantity}</td>
                         </tr>
                     ))}
